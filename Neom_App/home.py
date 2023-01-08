@@ -430,20 +430,19 @@ def main():
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
                     self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
-                    print(float(selected_values[3])*wi)
-                    print(float(selected_values[3]) * wi)
-                    print(float(selected_values[4]) * hi)
-                    print(float(selected_values[4]) * wi)
-                    print(float(selected_values[5]) * hi)
-                    print(float(selected_values[5]) * wi)
-                    print(float(selected_values[6]) * hi)
-                    print(float(selected_values[6]) * wi)
+                    print(float(selected_values[5]) * wi, "width")
+                    print(float(selected_values[6]) * hi, "height")
                     print((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
                             (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
-                    on_drag((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
-                            (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
+                    x, y, w, h = int(float(selected_values[3]) * (wi/2)), int(float(selected_values[4]) * (hi/2)), int(float(selected_values[5]) * wi), int(float(selected_values[6]) * hi)
+                    print(x, y, w, h, "hh")
+                    x = int(x - (h / 2))
+                    y = int(y - (w / 2))
+                    print((y, y+h), (x,x+w))
+                    print(x,y, w, h, "hh")
+                    on_drag((x, y), (h,w))
 
-                    # on_drag((139, 121), (239, 248))
+                    # on_drag((352, 209), (1000, 448))
 
 
 
