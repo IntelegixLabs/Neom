@@ -400,6 +400,8 @@ def main():
                     width = imgx.width() / 665
                     height = imgx.height() / 600
 
+                    wi, hi = imgx.width(), imgx.height()
+
                     img = ImageTk.PhotoImage(Image.open(path).resize((665, 600), Image.LANCZOS))
 
                     self.canvas = tk.Canvas(win, width=img.width(), height=img.height(),
@@ -414,6 +416,7 @@ def main():
 
                     # Callback function to update it given two points of its diagonal.
                     def on_drag(start, end, **kwarg):  # Must accept these arguments.
+                        print(start, end)
                         print(self.selection_obj.update(start, end))
                         focus_area = self.selection_obj._get_coords(start, end)
 
@@ -427,6 +430,20 @@ def main():
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
                     self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
+                    print(float(selected_values[3])*wi)
+                    print(float(selected_values[3]) * wi)
+                    print(float(selected_values[4]) * hi)
+                    print(float(selected_values[4]) * wi)
+                    print(float(selected_values[5]) * hi)
+                    print(float(selected_values[5]) * wi)
+                    print(float(selected_values[6]) * hi)
+                    print(float(selected_values[6]) * wi)
+                    print((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
+                            (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
+                    on_drag((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
+                            (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
+
+                    # on_drag((139, 121), (239, 248))
 
 
 
