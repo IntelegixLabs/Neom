@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import messagebox, Frame, filedialog, Label, DISABLED
+from tkinter import messagebox, Frame, filedialog, Label, DISABLED, ACTIVE, END
 from PIL import Image, ImageTk
 import cv2
 import configparser
@@ -56,6 +56,131 @@ class CreateToolTip(object):
         self.tw = None
         if tw:
             tw.destroy()
+
+
+focus_area = []
+
+
+class MousePositionTracker(tk.Frame):
+    """ Tkinter Canvas mouse position widget. """
+
+    def __init__(self, canvas):
+        self.canvas = canvas
+        self.canv_width = self.canvas.cget('width')
+        self.canv_height = self.canvas.cget('height')
+        self.reset()
+
+        # Create canvas cross-hair lines.
+        xhair_opts = dict(dash=(3, 2), fill='white', state=tk.HIDDEN)
+        self.lines = (self.canvas.create_line(0, 0, 0, self.canv_height, **xhair_opts),
+                      self.canvas.create_line(0, 0, self.canv_width,  0, **xhair_opts))
+
+    def cur_selection(self):
+        return (self.start, self.end)
+
+    def begin(self, event):
+        self.hide()
+        self.start = (event.x, event.y)  # Remember position (no drawing).
+
+    def update(self, event):
+        self.end = (event.x, event.y)
+        self._update(event)
+        self._command(self.start, (event.x, event.y))  # User callback.
+
+    def _update(self, event):
+        # Update cross-hair lines.
+        self.canvas.coords(self.lines[0], event.x, 0, event.x, self.canv_height)
+        self.canvas.coords(self.lines[1], 0, event.y, self.canv_width, event.y)
+        self.show()
+
+    def reset(self):
+        self.start = self.end = None
+
+    def hide(self):
+        self.canvas.itemconfigure(self.lines[0], state=tk.HIDDEN)
+        self.canvas.itemconfigure(self.lines[1], state=tk.HIDDEN)
+
+    def show(self):
+        self.canvas.itemconfigure(self.lines[0], state=tk.NORMAL)
+        self.canvas.itemconfigure(self.lines[1], state=tk.NORMAL)
+
+    def autodraw(self, command=lambda *args: None):
+        """Setup automatic drawing; supports command option"""
+        self.reset()
+        self._command = command
+        self.canvas.bind("<Button-1>", self.begin)
+        self.canvas.bind("<B1-Motion>", self.update)
+        self.canvas.bind("<ButtonRelease-1>", self.quit)
+
+    def quit(self, event):
+        self.hide()  # Hide cross-hairs.
+        self.reset()
+
+
+class SelectionObject:
+    """ Widget to display a rectangular area on given canvas defined by two points
+        representing its diagonal.
+    """
+
+    def __init__(self, canvas, select_opts):
+        # Create attributes needed to display selection.
+        self.canvas = canvas
+        self.select_opts1 = select_opts
+        self.width = self.canvas.cget('width')
+        self.height = self.canvas.cget('height')
+
+        # Options for areas outside rectanglar selection.
+        select_opts1 = self.select_opts1.copy()  # Avoid modifying passed argument.
+        select_opts1.update(state=tk.HIDDEN)  # Hide initially.
+        # Separate options for area inside rectanglar selection.
+        select_opts2 = dict(dash=(2, 2), fill='', outline='white', state=tk.HIDDEN)
+
+        # Initial extrema of inner and outer rectangles.
+        imin_x, imin_y, imax_x, imax_y = 0, 0, 1, 1
+        omin_x, omin_y, omax_x, omax_y = 0, 0, self.width, self.height
+
+        self.rects = (
+            # Area *outside* selection (inner) rectangle.
+            self.canvas.create_rectangle(omin_x, omin_y, omax_x, imin_y, **select_opts1),
+            self.canvas.create_rectangle(omin_x, imin_y, imin_x, imax_y, **select_opts1),
+            self.canvas.create_rectangle(imax_x, imin_y, omax_x, imax_y, **select_opts1),
+            self.canvas.create_rectangle(omin_x, imax_y, omax_x, omax_y, **select_opts1),
+            # Inner rectangle.
+            self.canvas.create_rectangle(imin_x, imin_y, imax_x, imax_y, **select_opts2)
+        )
+
+    def update(self, start, end):
+        # Current extrema of inner and outer rectangles.
+        imin_x, imin_y, imax_x, imax_y = self._get_coords(start, end)
+        omin_x, omin_y, omax_x, omax_y = 0, 0, self.width, self.height
+
+        # Update coords of all rectangles based on these extrema.
+        self.canvas.coords(self.rects[0], omin_x, omin_y, omax_x, imin_y),
+        self.canvas.coords(self.rects[1], omin_x, imin_y, imin_x, imax_y),
+        self.canvas.coords(self.rects[2], imax_x, imin_y, omax_x, imax_y),
+        self.canvas.coords(self.rects[3], omin_x, imax_y, omax_x, omax_y),
+        self.canvas.coords(self.rects[4], imin_x, imin_y, imax_x, imax_y),
+
+        for rect in self.rects:  # Make sure all are now visible.
+            self.canvas.itemconfigure(rect, state=tk.NORMAL)
+
+    def _get_coords(self, start, end):
+        """ Determine coords of a polygon defined by the start and
+            end points one of the diagonals of a rectangular area.
+        """
+        # print(min((start[0], end[0])), min((start[1], end[1])),
+        #       max((start[0], end[0])), max((start[1], end[1])))
+
+        focus_area = [min((start[0], end[0])), min((start[1], end[1])), max((start[0], end[0])),
+                      max((start[1], end[1]))]
+
+
+
+        return (focus_area)
+
+    def hide(self):
+        for rect in self.rects:
+            self.canvas.itemconfigure(rect, state=tk.HIDDEN)
 
 
 version = '1.0.1'
@@ -239,9 +364,14 @@ def main():
 
     def data_viewer():
 
-        class View_Image:
+        class View_Image(tk.Frame):
 
-            def __init__(self, win):
+            # Default selection object options.
+            SELECT_OPTS = dict(dash=(2, 2), stipple='gray25', fill='red',
+                               outline='')
+
+            def __init__(self, win, *args, **kwargs):
+                super().__init__(win, *args, **kwargs)
 
                 self.label_class = {0: 'POTHOLES', 1: 'GRAFFITI', 2: 'FADED SIGNAGE', 3: 'GARBAGE',
                                     4: 'CONSTRUCTION ROAD', 5: 'BROKEN SIGNAGE', 6: 'BAD STREETLIGHT',
@@ -253,6 +383,87 @@ def main():
                                     'BAD BILLBOARD': 7, 'SAND ON ROAD': 8, 'CLUTTER SIDEWALK': 9,
                                     'UNKEPT FACADE': 10}
 
+                selected_values = ["", "", "", "", "", "", "", "", "", "", ""]
+
+
+
+                def selectItem(a):
+                    curItem = self.tree.focus()
+
+                    # print(tree.item(curItem)['values'])
+                    selected_values = (self.tree.item(curItem)['values'])
+                    print(selected_values[2])
+
+                    path = selected_values[2]
+                    imgx = ImageTk.PhotoImage(Image.open(path))
+
+                    width = imgx.width() / 665
+                    height = imgx.height() / 600
+
+                    wi, hi = imgx.width(), imgx.height()
+
+                    img = ImageTk.PhotoImage(Image.open(path).resize((665, 600), Image.LANCZOS))
+
+                    self.canvas = tk.Canvas(win, width=img.width(), height=img.height(),
+                                            scrollregion=(0, 0, 500, 500))
+                    self.canvas.place(x=1250, y=150)
+
+                    self.canvas.create_image(0, 0, image=img, anchor=tk.NW)
+                    self.canvas.img = img  # Keep reference.
+
+                    # Create selection object to show current selection boundaries.
+                    self.selection_obj = SelectionObject(self.canvas, self.SELECT_OPTS)
+
+                    # Callback function to update it given two points of its diagonal.
+                    def on_drag(start, end, **kwarg):  # Must accept these arguments.
+                        print(start, end)
+                        print(self.selection_obj.update(start, end))
+                        focus_area = self.selection_obj._get_coords(start, end)
+
+                        print(focus_area, "hello", width, height)
+                        self.txtfld3.set(str(focus_area[0] * width))
+                        self.txtfld4.set(str(focus_area[1] * height))
+                        self.txtfld5.set(str(focus_area[2] * width))
+                        self.txtfld6.set(str(focus_area[3] * height))
+
+
+                    # Create mouse position tracker that uses the function.
+                    self.posn_tracker = MousePositionTracker(self.canvas)
+                    self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
+                    print(float(selected_values[3])*wi)
+                    print(float(selected_values[3]) * wi)
+                    print(float(selected_values[4]) * hi)
+                    print(float(selected_values[4]) * wi)
+                    print(float(selected_values[5]) * hi)
+                    print(float(selected_values[5]) * wi)
+                    print(float(selected_values[6]) * hi)
+                    print(float(selected_values[6]) * wi)
+                    print((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
+                            (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
+                    on_drag((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
+                            (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
+
+                    # on_drag((139, 121), (239, 248))
+
+
+
+                    self.txtfld1.set(selected_values[1])
+                    self.txtfld2.set(selected_values[9])
+                    self.txtfld3.set(selected_values[3])
+                    self.txtfld4.set(selected_values[4])
+                    self.txtfld5.set(selected_values[5])
+                    self.txtfld6.set(selected_values[6])
+                    self.txtfld7.set(selected_values[7])
+                    self.txtfld8.set(selected_values[8])
+
+                    if selected_values[11] == "Yes":
+                        self.btn_submit.config(state=DISABLED)
+                    else:
+                        self.btn_submit.config(state=ACTIVE)
+
+
+                    print(selected_values)
+
                 load = cv2.imread('Data/Images/Background/background_2.jpg', 1)
                 cv2imagex1 = cv2.cvtColor(load, cv2.COLOR_BGR2RGBA)
                 load = Image.fromarray(cv2imagex1)
@@ -261,6 +472,25 @@ def main():
                 img = tk.Label(image=render)
                 img.image = render
                 img.place(x=0, y=0)
+
+                path = "Data/Images/Background/no_image.jpg"
+                imgx = ImageTk.PhotoImage(Image.open(path))
+
+                width = int(imgx.width() // 665)
+                height = int(imgx.height() // 600)
+
+                img = ImageTk.PhotoImage(Image.open(path).resize((665, 600), Image.LANCZOS))
+
+                self.canvas = tk.Canvas(win, width=img.width(), height=img.height(),
+                                        scrollregion=(0, 0, 500, 500))
+                self.canvas.place(x=1250, y=150)
+
+                self.canvas.create_image(0, 0, image=img, anchor=tk.NW)
+                self.canvas.img = img  # Keep reference.
+
+
+
+
                 # LABEL AND TEXT BOX TO ENTER DETAILS OF ALL ELEMENTS OF A STATION
                 self.lb_title = Label(win, text="Capability",
                                       font=("Ariel", 30, 'underline'), bg='#F7F7F9')
@@ -271,6 +501,7 @@ def main():
 
                 self.txtfld1 = ttk.Combobox(win, font=("Helvetica", 20), )
                 self.txtfld1.place(x=300, y=350)
+                self.txtfld1.set(selected_values[1])
                 self.txtfld1.configure(state=DISABLED)
 
                 self.lb2 = Label(win, text="Image Class", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
@@ -282,48 +513,55 @@ def main():
                                                     'BAD BILLBOARD', 'SAND ON ROAD', 'CLUTTER SIDEWALK',
                                                     'UNKEPT FACADE'])
                 self.txtfld2.place(x=890, y=350)
-                self.txtfld2.set("")
+                self.txtfld2.set(selected_values[9])
 
                 self.lb3 = Label(win, text="W Coordinate", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb3.place(x=60, y=425)
 
                 self.txtfld3 = ttk.Combobox(win, font=("Helvetica", 20))
                 self.txtfld3.place(x=300, y=425)
-                self.txtfld3.set("")
+                self.txtfld3.set(selected_values[3])
+                self.txtfld3.config(state=DISABLED)
 
                 self.lb4 = Label(win, text="X Coordinate", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb4.place(x=650, y=425)
+
                 self.txtfld4 = ttk.Combobox(win, font=("Helvetica", 20))
                 self.txtfld4.place(x=890, y=425)
-                self.txtfld4.set("")
+                self.txtfld4.set(selected_values[4])
+                self.txtfld4.config(state=DISABLED)
 
                 self.lb5 = Label(win, text="Y Coordinate", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb5.place(x=60, y=500)
 
                 self.txtfld5 = ttk.Combobox(win, font=("Helvetica", 20))
                 self.txtfld5.place(x=300, y=500)
-                self.txtfld5.set("")
+                self.txtfld5.set(selected_values[5])
+                self.txtfld5.config(state=DISABLED)
 
                 self.lb6 = Label(win, text="Z Coordinate", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb6.place(x=650, y=500)
 
                 self.txtfld6 = ttk.Combobox(win, font=("Helvetica", 20))
                 self.txtfld6.place(x=890, y=500)
-                self.txtfld6.set("")
+                self.txtfld6.set(selected_values[6])
+                self.txtfld6.config(state=DISABLED)
 
                 self.lb7 = Label(win, text="Latitude", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb7.place(x=60, y=575)
 
                 self.txtfld7 = ttk.Combobox(win, font=("Helvetica", 20))
                 self.txtfld7.place(x=300, y=575)
-                self.txtfld7.set("")
+                self.txtfld7.set(selected_values[7])
+                self.txtfld7.config(state=DISABLED)
 
                 self.lb8 = Label(win, text="Longitude", fg='black', font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb8.place(x=650, y=575)
 
                 self.txtfld8 = ttk.Combobox(win, font=("Helvetica", 20))
                 self.txtfld8.place(x=890, y=575)
-                self.txtfld8.set("")
+                self.txtfld8.set(selected_values[8])
+                self.txtfld8.config(state=DISABLED)
 
                 self.btn_submit = ttk.Button(win, text="SUBMIT")
                 self.btn_submit.place(x=600, y=660, width=250, height=60)
@@ -461,15 +699,16 @@ def main():
                 self.tree = ttk.Treeview(self.frame, columns=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), height=14,
                                          show="headings")
                 self.tree.pack(side='left')
+                self.tree.bind('<ButtonRelease-1>', selectItem)
 
                 self.val = ["serial No", "User Id", "Image Url", "W Coordinate", "X Coordinate", "Y Coordinate",
                             "Z Coordinate", "Latitude", "Longitude", "Class Of Image", "Auto", "Uploaded"]
 
-                for i in range(1, len(self.val) + 1):
-                    self.tree.heading(i, text=self.val[i - 1])
+                for ii in range(1, len(self.val) + 1):
+                    self.tree.heading(ii, text=self.val[ii - 1])
 
-                for i in range(1, len(self.val) + 1):
-                    self.tree.column(i, width=156, anchor='center')
+                for ii in range(1, len(self.val) + 1):
+                    self.tree.column(ii, width=156, anchor='center')
 
                 self.scroll1 = ttk.Scrollbar(self.frame, orient="vertical", command=self.tree.yview)
                 self.scroll1.pack(side='right', fill='y')
