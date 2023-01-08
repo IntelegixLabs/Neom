@@ -14,15 +14,15 @@
             "uploaded": "Yes"
         },
         {
-            "userid": 111,
-            "image_url": "Data/Saved_Images/20201112011112.jpg",
-            "w_cord": 789.0,
-            "x_cord": 567.0,
-            "y_cord": 45.0,
-            "z_cord": 123.0,
-            "latitude": 12.33,
-            "longitude": 67.9,
-            "class_of_image": 0,
+            "userid": 234,
+            "image_url": "Data/Saved_Images/broken billboard_10.jpeg",
+            "w_cord": 0.542692,
+            "x_cord": 0.439601,
+            "y_cord": 0.774615,
+            "z_cord": 0.513655,
+            "latitude": 12.44,
+            "longitude": 44.9,
+            "class_of_image": 6,
             "auto": "Yes",
             "uploaded": "No"
         }
