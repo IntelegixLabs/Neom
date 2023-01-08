@@ -6,7 +6,8 @@ val: ./data/val  # 5000 images
 test: ./data/test  # 20288 of 40670 images, submit to https://competitions.codalab.org/competitions/20794
 
 # number of classes
-nc: 1
+nc: 11
 
 # class names
-names: [ 'potholes' ]
+names: [ 'POTHOLES', 'GRAFFITI', 'FADED SIGNAGE', 'GARBAGE', 'CONSTRUCTION ROAD', 'BROKEN SIGNAGE', 'BAD STREETLIGHT',
+        'BAD BILLBOARD', 'SAND ON ROAD', 'CLUTTER SIDEWALK', 'UNKEPT FACADE' ]
