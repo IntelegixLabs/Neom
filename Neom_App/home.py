@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 import cv2
 import configparser
 import json
+import pybboxes as pbx
 import os
 
 
@@ -73,7 +74,7 @@ class MousePositionTracker(tk.Frame):
         # Create canvas cross-hair lines.
         xhair_opts = dict(dash=(3, 2), fill='white', state=tk.HIDDEN)
         self.lines = (self.canvas.create_line(0, 0, 0, self.canv_height, **xhair_opts),
-                      self.canvas.create_line(0, 0, self.canv_width,  0, **xhair_opts))
+                      self.canvas.create_line(0, 0, self.canv_width, 0, **xhair_opts))
 
     def cur_selection(self):
         return (self.start, self.end)
@@ -173,8 +174,6 @@ class SelectionObject:
 
         focus_area = [min((start[0], end[0])), min((start[1], end[1])), max((start[0], end[0])),
                       max((start[1], end[1]))]
-
-
 
         return (focus_area)
 
@@ -385,8 +384,6 @@ def main():
 
                 selected_values = ["", "", "", "", "", "", "", "", "", "", ""]
 
-
-
                 def selectItem(a):
                     curItem = self.tree.focus()
 
@@ -420,12 +417,30 @@ def main():
                         print(self.selection_obj.update(start, end))
                         focus_area = self.selection_obj._get_coords(start, end)
 
-                        print(focus_area, "hello", width, height)
-                        self.txtfld3.set(str(focus_area[0] * width))
-                        self.txtfld4.set(str(focus_area[1] * height))
-                        self.txtfld5.set(str(focus_area[2] * width))
-                        self.txtfld6.set(str(focus_area[3] * height))
+                        x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
+                                                          image_size=(hi, wi))
 
+                        # print(focus_area, "hello", width, height)
+                        #
+                        # def bbox_dict_to_list(size, box):
+                        #     dw = 1. / size[0]
+                        #     dh = 1. / size[1]
+                        #     x = (box[0] + box[1]) / 2.0
+                        #     y = (box[2] + box[3]) / 2.0
+                        #     w = box[1] - box[0]
+                        #     h = box[3] - box[2]
+                        #     x = x * dw
+                        #     w = w * dw
+                        #     y = y * dh
+                        #     h = h * dh
+                        #     return (x, y, w, h)
+                        #
+                        # x1, y1, x2, y2 = bbox_dict_to_list([wi,hi], focus_area)
+
+                        self.txtfld3.set(str(x1))
+                        self.txtfld4.set(str(y1))
+                        self.txtfld5.set(str(x2))
+                        self.txtfld6.set(str(y2))
 
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
@@ -441,20 +456,18 @@ def main():
                     # print((y, y+h), (x,x+w))
                     # print(x,y, w, h, "hh")
 
-                    center_X = (float(selected_values[3])*wi)/width
-                    center_y = (float(selected_values[4])*hi)/height
-                    widthx = (float(selected_values[5])*wi)/width
-                    heightx = (float(selected_values[6])*hi)/height
+                    center_X = (float(selected_values[3]) * wi) / width
+                    center_y = (float(selected_values[4]) * hi) / height
+                    widthx = (float(selected_values[5]) * wi) / width
+                    heightx = (float(selected_values[6]) * hi) / height
 
                     x = int(center_X - (widthx / 2))
                     y = int(center_y - (heightx / 2))
 
-                    print(x,y,x+widthx,y+heightx, "yggy")
-                    on_drag((int(x),int(y)),(x+int(widthx), int(y+heightx)) )
+                    print(x, y, x + widthx, y + heightx, "yggy")
+                    on_drag((int(x), int(y)), (x + int(widthx), int(y + heightx)))
 
                     # on_drag((352, 209), (1000, 448))
-
-
 
                     self.txtfld1.set(selected_values[1])
                     self.txtfld2.set(selected_values[9])
@@ -470,7 +483,6 @@ def main():
                     else:
                         self.btn_submit.config(state=ACTIVE)
 
-
                     print(selected_values)
 
                 load = cv2.imread('Data/Images/Background/background_2.jpg', 1)
@@ -481,6 +493,15 @@ def main():
                 img = tk.Label(image=render)
                 img.image = render
                 img.place(x=0, y=0)
+
+                load = cv2.imread('Data/Images/Background/logo.png', 1)
+                cv2imagex1 = cv2.cvtColor(load, cv2.COLOR_BGR2RGBA)
+                load = Image.fromarray(cv2imagex1)
+                load = load.resize((int(250), int(160)), Image.LANCZOS)
+                render = ImageTk.PhotoImage(load)
+                img = tk.Label(image=render)
+                img.image = render
+                img.place(x=1515, y=0)
 
                 path = "Data/Images/Background/no_image.jpg"
                 imgx = ImageTk.PhotoImage(Image.open(path))
@@ -497,13 +518,10 @@ def main():
                 self.canvas.create_image(0, 0, image=img, anchor=tk.NW)
                 self.canvas.img = img  # Keep reference.
 
-
-
-
                 # LABEL AND TEXT BOX TO ENTER DETAILS OF ALL ELEMENTS OF A STATION
-                self.lb_title = Label(win, text="Capability",
-                                      font=("Ariel", 30, 'underline'), bg='#F7F7F9')
-                self.lb_title.place(x=550, y=110)
+                self.lb_title = Label(win, text="Image Data Captured",
+                                      font=("Ariel", 40, "bold"), bg='#F7F7F9')
+                self.lb_title.place(x=420, y=150)
 
                 self.lb1 = Label(win, text="User Id", font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb1.place(x=60, y=350)
@@ -642,7 +660,7 @@ def main():
                                      fg='#b7f731',
                                      relief='flat',
                                      width=20, command=self.quit)
-                self.b0r.place(x=1296, y=0, width=150, height=150)
+                self.b0r.place(x=1770, y=0, width=150, height=150)
 
             @staticmethod
             def quit():

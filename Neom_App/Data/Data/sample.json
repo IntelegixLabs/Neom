@@ -51,6 +51,19 @@
             "class_of_image": 6,
             "auto": "Yes",
             "uploaded": "No"
+        },
+        {
+            "userid": 234,
+            "image_url": "Data/Saved_Images/img-197.jpg",
+            "w_cord": 0.507639,
+            "x_cord": 0.593056,
+            "y_cord": 0.470833,
+            "z_cord": 0.286111,
+            "latitude": 12.44,
+            "longitude": 44.9,
+            "class_of_image": 6,
+            "auto": "Yes",
+            "uploaded": "No"
         }
     ]
 }
