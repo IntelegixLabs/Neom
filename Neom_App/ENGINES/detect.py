@@ -1,4 +1,3 @@
-import argparse
 import time
 from pathlib import Path
 
@@ -7,12 +6,12 @@ import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 
-from ..models.experimental import attempt_load
-from ..utils.datasets import LoadStreams, LoadImages
-from ..utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
+from models.experimental import attempt_load
+from utils.datasets import LoadStreams, LoadImages
+from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
-from ..utils.plots import plot_one_box
-from ..utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
+from utils.plots import plot_one_box
+from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
 
 
 def detect(source, weights, device, img_size, iou_thres, conf_thres):
@@ -113,9 +112,14 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
             print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
 
             # Stream results
-
+            cv2.namedWindow("Output", cv2.WINDOW_NORMAL)
+            cv2.setWindowProperty("Output", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
             cv2.imshow(str(p), im0)
             cv2.waitKey(1)  # 1 millisecond
+
+            if (cv2.waitKey(1) & 0xFF == ord('q')):
+                break
+
 
 
     print(f'Done. ({time.time() - t0:.3f}s)')
@@ -124,4 +128,4 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
 if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     with torch.no_grad():
-        detect("0", "best.pt", device, img_size=640, iou_thres=0.45, conf_thres=0.5)
+        detect("sections.mov", "best.pt", device, img_size=640, iou_thres=0.45, conf_thres=0.5)

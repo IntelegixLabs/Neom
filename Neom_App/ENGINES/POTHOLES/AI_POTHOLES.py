@@ -18,7 +18,7 @@ from ..utils.general import check_img_size, check_requirements, check_imshow, no
 from ..utils.plots import plot_one_box
 from ..utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
 
-def AI_DRIVER_MONITORING():
+def AI_POT_HOLES_DETECTION():
 
 
     # #Initialize Pygame and load music
