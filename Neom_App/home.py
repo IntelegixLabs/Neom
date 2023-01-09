@@ -464,7 +464,6 @@ def main():
                     x = int(center_X - (widthx / 2))
                     y = int(center_y - (heightx / 2))
 
-                    print(x, y, x + widthx, y + heightx, "yggy")
                     on_drag((int(x), int(y)), (x + int(widthx), int(y + heightx)))
 
                     # on_drag((352, 209), (1000, 448))
