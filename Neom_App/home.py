@@ -430,17 +430,27 @@ def main():
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
                     self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
-                    print(float(selected_values[5]) * wi, "width")
-                    print(float(selected_values[6]) * hi, "height")
-                    print((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
-                            (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
-                    x, y, w, h = int(float(selected_values[3]) * (wi/2)), int(float(selected_values[4]) * (hi/2)), int(float(selected_values[5]) * wi), int(float(selected_values[6]) * hi)
-                    print(x, y, w, h, "hh")
-                    x = int(x - (h / 2))
-                    y = int(y - (w / 2))
-                    print((y, y+h), (x,x+w))
-                    print(x,y, w, h, "hh")
-                    on_drag((x, y), (h,w))
+                    # print(float(selected_values[5]) * wi, "width")
+                    # print(float(selected_values[6]) * hi, "height")
+                    # print((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
+                    #         (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
+                    # x, y, w, h = int(float(selected_values[3]) * (wi/2)), int(float(selected_values[4]) * (hi/2)), int(float(selected_values[5]) * wi), int(float(selected_values[6]) * hi)
+                    # print(x, y, w, h, "hh")
+                    # x = int(x - (h / 2))
+                    # y = int(y - (w / 2))
+                    # print((y, y+h), (x,x+w))
+                    # print(x,y, w, h, "hh")
+
+                    center_X = (float(selected_values[3])*wi)/width
+                    center_y = (float(selected_values[4])*hi)/height
+                    widthx = (float(selected_values[5])*wi)/width
+                    heightx = (float(selected_values[6])*hi)/height
+
+                    x = int(center_X - (widthx / 2))
+                    y = int(center_y - (heightx / 2))
+
+                    print(x,y,x+widthx,y+heightx, "yggy")
+                    on_drag((int(x),int(y)),(x+int(widthx), int(y+heightx)) )
 
                     # on_drag((352, 209), (1000, 448))
 
@@ -563,124 +573,7 @@ def main():
                 self.txtfld8.config(state=DISABLED)
 
                 self.btn_submit = ttk.Button(win, text="SUBMIT")
-                self.btn_submit.place(x=600, y=660, width=250, height=60)
-
-                # listx = []
-                #
-                # iter = 0
-                #
-                # path = 'Data/Saved_Images'
-                #
-                # print(path)
-                #
-                # for dirname, _, filenames in os.walk(path):
-                #     for filename in filenames:
-                #         print(path + '/' + filename)
-                #         listx.append(str(path + '/' + filename))
-                #
-                # load = cv2.imread('Data/Images/Background/logo.png', 1)
-                # cv2imagex1 = cv2.cvtColor(load, cv2.COLOR_BGR2RGBA)
-                # load = Image.fromarray(cv2imagex1)
-                # load = load.resize((int(70), int(70)), Image.ANTIALIAS)
-                # render = ImageTk.PhotoImage(load)
-                # img = tk.Label(image=render)
-                # img.image = render
-                # img.place(x=0, y=700)
-                #
-                # img1 = tk.Label(image=render)
-                # img1.image = render
-                #
-                # img1.place(x=1296, y=700)
-
-                # print(listx)
-                #
-                # listx = sorted(listx, reverse=True)
-                #
-                # print(listx)
-                #
-                # def image_viewer(iter, key=0):
-                #
-                #     print("ft", iter)
-                #
-                #     if iter > len(listx) - 1:
-                #         iter = len(listx) - 1
-                #
-                #     if iter <= -1:
-                #         iter = 0
-                #
-                #     print(iter)
-                #
-                #     load = cv2.imread(listx[iter], 1)
-                #     cv2imagex1 = cv2.cvtColor(load, cv2.COLOR_BGR2RGBA)
-                #     load = Image.fromarray(cv2imagex1)
-                #     regx = tk.Tk()
-                #     load = load.resize(
-                #         (int(regx.winfo_screenwidth()) - 140, int(regx.winfo_screenheight()) - 70),
-                #         Image.ANTIALIAS)
-                #
-                #     render = ImageTk.PhotoImage(load)
-                #     img = tk.Label(image=render)
-                #     img.image = render
-                #     img.place(x=70, y=70)
-                #
-                #     regx.destroy()
-                #
-                #     if key == 2:
-                #
-                #         try:
-                #             self.forward_right.destroy()
-                #             self.forward_right = ttk.Button(win, text=">", style='my.TButton', width=20,
-                #                                             command=lambda: image_viewer(iter + 1, key=2))
-                #             self.forward_right.place(x=1296, y=70, width=74, height=632)
-                #         except:
-                #             pass
-                #
-                #         try:
-                #             self.back_left.destroy()
-                #
-                #             self.back_left = ttk.Button(win, text="<", style='my.TButton', width=20,
-                #                                         command=lambda: image_viewer(iter - 1, key=1))
-                #             self.back_left.place(x=0, y=70, width=74, height=632)
-                #         except:
-                #             pass
-                #
-                #     if key == 1:
-                #         try:
-                #             self.back_left.destroy()
-                #
-                #             self.back_left = ttk.Button(win, text="<", style='my.TButton', width=20,
-                #                                         command=lambda: image_viewer(iter - 1, key=1))
-                #             self.back_left.place(x=0, y=70, width=74, height=632)
-                #         except:
-                #             pass
-                #
-                #         try:
-                #             self.forward_right.destroy()
-                #             self.forward_right = ttk.Button(win, text=">", style='my.TButton', width=20,
-                #                                             command=lambda: image_viewer(iter + 1, key=2))
-                #             self.forward_right.place(x=1296, y=70, width=74, height=632)
-                #         except:
-                #             pass
-                #
-                #     return iter
-                #
-                # image_viewer(iter)
-                #
-
-                #
-                # s = ttk.Style()
-                # s.configure('my.TButton', font=('Aerial', 25, 'bold'))
-                #
-                # self.back_left = ttk.Button(win, text="<", style='my.TButton', width=20,
-                #                             command=lambda: image_viewer(iter - 1, key=1))
-                # self.back_left.place(x=0, y=70, width=74, height=632)
-                #
-                # self.forward_right = ttk.Button(win, text=">", style='my.TButton', width=20,
-                #                                 command=lambda: image_viewer(iter + 1, key=2))
-                # self.forward_right.place(x=1296, y=70, width=74, height=632)
-                #
-                # self.h0 = ttk.Button(win, style='my.TButton', width=20)
-                # self.h0.place(x=70, y=-1, width=1226, height=72)
+                self.btn_submit.place(x=540, y=660, width=250, height=60)
 
                 self.temp_values = []
 

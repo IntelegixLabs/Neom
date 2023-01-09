@@ -25,6 +25,32 @@
             "class_of_image": 6,
             "auto": "Yes",
             "uploaded": "No"
+        },
+        {
+            "userid": 234,
+            "image_url": "Data/Saved_Images/smart.png",
+            "w_cord": 0.153956,
+            "x_cord": 0.248000,
+            "y_cord": 0.254222,
+            "z_cord": 0.212800,
+            "latitude": 12.44,
+            "longitude": 44.9,
+            "class_of_image": 6,
+            "auto": "Yes",
+            "uploaded": "No"
+        },
+        {
+            "userid": 234,
+            "image_url": "Data/Saved_Images/GRAFFITI_5.jpeg",
+            "w_cord": 0.459961,
+            "x_cord": 0.572754,
+            "y_cord": 0.918620,
+            "z_cord": 0.458008,
+            "latitude": 12.44,
+            "longitude": 44.9,
+            "class_of_image": 6,
+            "auto": "Yes",
+            "uploaded": "No"
         }
     ]
 }
