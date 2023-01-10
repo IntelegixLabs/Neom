@@ -1,21 +1,30 @@
-import argparse
-import time
 from pathlib import Path
-
+import os
+from scipy.spatial import distance
+import numpy as np
+import time
 import cv2
+from datetime import datetime
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 
-from ..models.experimental import attempt_load
-from ..utils.datasets import LoadStreams, LoadImages
-from ..utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
+
+from models.experimental import attempt_load
+from utils.datasets import LoadStreams, LoadImages
+from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
-from ..utils.plots import plot_one_box
-from ..utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
+from utils.plots import plot_one_box
+from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
 
+def AI_DRIVER_MONITORING(source="0"):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    weights = "best.pt"
+    img_size = 640
+    iou_thres = 0.45
+    conf_thres = 0.5
 
-def detect(source, weights, device, img_size, iou_thres, conf_thres):
+    font = cv2.FONT_HERSHEY_SIMPLEX
 
     webcam = source.isnumeric()
 
@@ -31,7 +40,6 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
 
     if half:
         model.half()  # to FP16
-
 
     # Set Dataloader
     if webcam:
@@ -51,8 +59,15 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
     old_img_w = old_img_h = imgsz
     old_img_b = 1
 
-    t0 = time.time()
+    pot_holes = 0
+    ii = 0
     for path, img, im0s, vid_cap in dataset:
+        if ii % 10 != 0:
+            ii += 1
+            continue
+        else:
+            ii += 1
+
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
@@ -60,15 +75,15 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
             img = img.unsqueeze(0)
 
         # Warmup
-        if device.type != 'cpu' and (old_img_b != img.shape[0] or old_img_h != img.shape[2] or old_img_w != img.shape[3]):
+        if device.type != 'cpu' and (
+                old_img_b != img.shape[0] or old_img_h != img.shape[2] or old_img_w != img.shape[3]):
             old_img_b = img.shape[0]
             old_img_h = img.shape[2]
             old_img_w = img.shape[3]
 
-
         # Inference
         t1 = time_synchronized()
-        with torch.no_grad():   # Calculating gradients would cause a GPU memory leak
+        with torch.no_grad():  # Calculating gradients would cause a GPU memory leak
             pred = model(img)[0]
         t2 = time_synchronized()
 
@@ -76,13 +91,15 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
         pred = non_max_suppression(pred, conf_thres, iou_thres)
         t3 = time_synchronized()
 
-
         # Process detections
         for i, det in enumerate(pred):  # detections per image
+
             if webcam:  # batch_size >= 1
                 p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
             else:
                 p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
+
+            im0 = cv2.resize(im0, (640, 480))
 
             p = Path(p)  # to Path
             # save_path = str(save_dir / p.name)  # img.jpg
@@ -99,32 +116,64 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
-                    # if save_txt:  # Write to file
-                    #     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    #     line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-                    #     with open(txt_path + '.txt', 'a') as f:
-                    #         f.write(('%g ' * len(line)).rstrip() % line + '\n')
-                    #
-                    # if save_img or view_img:  # Add bbox to image
                     label = f'{names[int(cls)]} {conf:.2f}'
+                    print(xyxy)
+                    pot_holes += 1
                     plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
 
             # Print time (inference + NMS)
-            print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
 
-            # Stream results
+            (H, W) = im0.shape[:2]
 
+            print(H, W)
 
+            cv2.putText(im0, "Neom (PotHoles Detection System)", (110, 40),
+                        font, 0.7 * 1, (255, 255, 255), 2)
+            cv2.rectangle(im0, (20, 50), (W - 20, 15), (255, 255, 255), 2)
+            # cv2.putText(img, "RISK ANALYSIS", (30, 85),
+            #             font, 0.5, (255, 255, 0), 1)
+            # cv2.putText(img, "-- GREEN : SAFE", (H-100, 85),
+            #             font, 0.5, (0, 255, 0), 1)
+            # cv2.putText(img, "-- RED: UNSAFE", (H-200, 85),
+            #             font, 0.5, (0, 0, 255), 1)
 
+            tot_str = "Total Potholes Detected : " + str(pot_holes)
+            high_str = "Cigarette Detected : " + str(0)
+            low_str = "Cell Phone Detected : " + str(0)
+            safe_str = "Total Persons: " + str(0)
 
-            cv2.imshow(str(p), im0)
-            cv2.waitKey(1)  # 1 millisecond
+            Cigarette = "False"
+            Mobile = "False"
 
+            sub_img = im0[H - 100: H, 0:260]
+            black_rect = np.ones(sub_img.shape, dtype=np.uint8) * 0
 
-    print(f'Done. ({time.time() - t0:.3f}s)')
+            res = cv2.addWeighted(sub_img, 0.8, black_rect, 0.2, 1.0)
 
+            im0[H - 100:H + 40, 0:260] = res
+
+            cv2.putText(im0, tot_str, (10, H - 80),
+                        font, 0.5 * 1, (255, 255, 255), 1)
+            cv2.putText(im0, high_str, (10, H - 55),
+                        font, 0.5 * 1, (0, 255, 0), 1)
+            cv2.putText(im0, low_str, (10, H - 30),
+                        font, 0.5 * 1, (0, 120, 255), 1)
+            cv2.putText(im0, safe_str, (10, H - 5),
+                        font, 0.5 * 1, (0, 0, 150), 1)
+
+            now = datetime.now()
+
+            timex = str(now.strftime("%d/%m/%Y %H:%M:%S"))
+            cv2.putText(im0, timex, (W - 200, H - 10),
+                        font, 0.5 * 1, (255, 255, 255), 1)
+
+            cv2.namedWindow("Output", cv2.WINDOW_NORMAL)
+            cv2.setWindowProperty("Output", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.imshow("Output", im0)
+
+            if (cv2.waitKey(1) & 0xFF == ord('q')):
+                break
 
 if __name__ == '__main__':
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     with torch.no_grad():
-        detect("0", "best.pt", device, img_size=640, iou_thres=0.45, conf_thres=0.5)
+        AI_DRIVER_MONITORING("sections.mov")
