@@ -6,6 +6,7 @@ import cv2
 import configparser
 import json
 import pybboxes as pbx
+import geocoder
 import os
 
 
@@ -452,12 +453,16 @@ def main():
                     self.posn_tracker = MousePositionTracker(self.canvas)
                     self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
 
+                    latitude, longitude = geocoder.ip('me').latlng
+
                     self.txtfld1.set("")
                     self.txtfld2.set("")
                     self.txtfld3.set("")
                     self.txtfld4.set("")
                     self.txtfld5.set("")
                     self.txtfld6.set("")
+                    self.txtfld7.set(latitude)
+                    self.txtfld8.set(longitude)
 
 
                     vid.release()
@@ -706,6 +711,68 @@ def main():
                                      relief='flat',
                                      width=20, command=self.quit)
                 self.b0r.place(x=1770, y=0, width=150, height=150)
+
+
+            def validate(self):
+                pass
+                # try:
+                #     notification = []
+                #     if self.chkValue1.get():
+                #         notification.append("Alarm")
+                #     if self.chkValue2.get():
+                #         notification.append("Text Message")
+                #     if self.chkValue3.get():
+                #         notification.append("Live Stream")
+                #     json_data = {
+                #         "serial": str(self.txtfld1.get()),
+                #         "model": str(self.txtfld2.get()),
+                #         "version": float(self.txtfld3.get()),
+                #         "lastdownload": str(self.txtfld4.get()),
+                #         "lastcheckin": str(self.txtfld5.get()),
+                #         "phonenumber": str(self.txtfldp.get()),
+                #         "notifications": notification,
+                #         "address": str(self.text_box.get(1.0, "end-1c")),
+                #         "cameras": [],
+                #         "alerts": []
+                #     }
+                #
+                #     for each in self.temp_values_1:
+                #         temp = {
+                #             "type": str(each[0]),
+                #             "url": str(each[1]),
+                #             "focus area": str(each[2]),
+                #             "username": str(each[3]),
+                #             "pass": str(each[4]),
+                #
+                #         }
+                #         json_data["cameras"].append(temp)
+                #
+                #     for each in self.temp_values_2:
+                #         temp = {
+                #             "alerttype": str(each[0]),
+                #             "threshold": float(each[1]),
+                #             "start": str(each[2]),
+                #             "end": str(each[3]),
+                #             "minframes": int(each[4])
+                #         }
+                #         json_data["alerts"].append(temp)
+                #
+                #
+                #     json_object = json.dumps(json_data, indent=4)
+                #
+                #     # Writing to sample.json
+                #     f = asksaveasfile(initialfile='Untitled.json', defaultextension=".json",
+                #                       filetypes=[("Json", "*.*")])
+                #     # print(f)
+                #     # with open(f, "w") as outfile:
+                #     #     outfile.write(json_object)
+                #
+                #     f.write(json_object)
+                #     f.close()
+                #
+                #     messagebox.showinfo("Successfully", "The data saved into Json Data successfully")
+                # except:
+                #     messagebox.showerror("Operation failed", "The data cannot be saved. Entered data invalid")
 
             @staticmethod
             def quit():
