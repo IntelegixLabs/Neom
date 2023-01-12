@@ -169,8 +169,7 @@ class SelectionObject:
         """ Determine coords of a polygon defined by the start and
             end points one of the diagonals of a rectangular area.
         """
-        # print(min((start[0], end[0])), min((start[1], end[1])),
-        #       max((start[0], end[0])), max((start[1], end[1])))
+
 
         focus_area = [min((start[0], end[0])), min((start[1], end[1])), max((start[0], end[0])),
                       max((start[1], end[1]))]
@@ -385,29 +384,12 @@ def main():
                 selected_values = ["", "", "", "", "", "", "", "", "", "", ""]
 
                 def on_drag(start, end, **kwarg):  # Must accept these arguments.
-                    print(start, end)
-                    print(self.selection_obj.update(start, end))
+                    self.selection_obj.update(start, end)
                     focus_area = self.selection_obj._get_coords(start, end)
 
                     x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
                                                       image_size=(665, 600))
 
-                    # print(focus_area, "hello", width, height)
-                    #
-                    # def bbox_dict_to_list(size, box):
-                    #     dw = 1. / size[0]
-                    #     dh = 1. / size[1]
-                    #     x = (box[0] + box[1]) / 2.0
-                    #     y = (box[2] + box[3]) / 2.0
-                    #     w = box[1] - box[0]
-                    #     h = box[3] - box[2]
-                    #     x = x * dw
-                    #     w = w * dw
-                    #     y = y * dh
-                    #     h = h * dh
-                    #     return (x, y, w, h)
-                    #
-                    # x1, y1, x2, y2 = bbox_dict_to_list([wi,hi], focus_area)
 
                     self.txtfld3.set(str(x1))
                     self.txtfld4.set(str(y1))
@@ -471,9 +453,7 @@ def main():
                 def selectItem(a):
                     curItem = self.tree.focus()
 
-                    # print(tree.item(curItem)['values'])
                     selected_values = (self.tree.item(curItem)['values'])
-                    print(selected_values[2])
 
                     path = selected_values[2]
                     imgx = ImageTk.PhotoImage(Image.open(path))
@@ -527,7 +507,6 @@ def main():
                     else:
                         self.btn_submit.config(state=ACTIVE)
 
-                    print(selected_values)
 
                 load = cv2.imread('Data/Images/Background/background_2.jpg', 1)
                 cv2imagex1 = cv2.cvtColor(load, cv2.COLOR_BGR2RGBA)
