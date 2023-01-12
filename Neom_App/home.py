@@ -384,6 +384,88 @@ def main():
 
                 selected_values = ["", "", "", "", "", "", "", "", "", "", ""]
 
+
+                def new_camera():
+
+                    vid = cv2.VideoCapture(0)
+
+                    # Declare the width and height in variables
+                    wi, hi = 665, 600
+
+                    # Set the width and height
+                    vid.set(cv2.CAP_PROP_FRAME_WIDTH, wi)
+                    vid.set(cv2.CAP_PROP_FRAME_HEIGHT, hi)
+
+                    _, frame = vid.read()
+
+
+                    # Convert image from one color space to other
+                    opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+
+                    # Capture the latest frame and transform to image
+                    captured_image = Image.fromarray(opencv_image).resize((665, 600), Image.LANCZOS)
+
+                    # Convert captured image to photoimage
+                    photo_image = ImageTk.PhotoImage(image=captured_image)
+
+
+                    self.canvas = tk.Canvas(win, width=wi, height=hi,
+                                            scrollregion=(0, 0, 500, 500))
+                    self.canvas.place(x=1250, y=150)
+
+                    self.canvas.create_image(0, 0, image=photo_image, anchor=tk.NW)
+                    self.canvas.img = photo_image  # Keep reference.
+
+
+                    # Create selection object to show current selection boundaries.
+                    self.selection_obj = SelectionObject(self.canvas, self.SELECT_OPTS)
+
+                    # Callback function to update it given two points of its diagonal.
+                    def on_drag(start, end, **kwarg):  # Must accept these arguments.
+                        print(start, end)
+                        print(self.selection_obj.update(start, end))
+                        focus_area = self.selection_obj._get_coords(start, end)
+
+                        x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
+                                                          image_size=(hi, wi))
+
+                        # print(focus_area, "hello", width, height)
+                        #
+                        # def bbox_dict_to_list(size, box):
+                        #     dw = 1. / size[0]
+                        #     dh = 1. / size[1]
+                        #     x = (box[0] + box[1]) / 2.0
+                        #     y = (box[2] + box[3]) / 2.0
+                        #     w = box[1] - box[0]
+                        #     h = box[3] - box[2]
+                        #     x = x * dw
+                        #     w = w * dw
+                        #     y = y * dh
+                        #     h = h * dh
+                        #     return (x, y, w, h)
+                        #
+                        # x1, y1, x2, y2 = bbox_dict_to_list([wi,hi], focus_area)
+
+                        self.txtfld3.set(str(x1))
+                        self.txtfld4.set(str(y1))
+                        self.txtfld5.set(str(x2))
+                        self.txtfld6.set(str(y2))
+
+                    # Create mouse position tracker that uses the function.
+                    self.posn_tracker = MousePositionTracker(self.canvas)
+                    self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
+
+                    self.txtfld1.set("")
+                    self.txtfld2.set("")
+                    self.txtfld3.set("")
+                    self.txtfld4.set("")
+                    self.txtfld5.set("")
+                    self.txtfld6.set("")
+
+
+                    vid.release()
+
+
                 def selectItem(a):
                     curItem = self.tree.focus()
 
@@ -520,7 +602,7 @@ def main():
                 # LABEL AND TEXT BOX TO ENTER DETAILS OF ALL ELEMENTS OF A STATION
                 self.lb_title = Label(win, text="Image Data Captured",
                                       font=("Ariel", 40, "bold"), bg='#F7F7F9')
-                self.lb_title.place(x=420, y=150)
+                self.lb_title.place(x=420, y=200)
 
                 self.lb1 = Label(win, text="User Id", font=("Helvetica", 20), bg='#F7F7F9')
                 self.lb1.place(x=60, y=350)
@@ -591,6 +673,15 @@ def main():
 
                 self.btn_submit = ttk.Button(win, text="SUBMIT")
                 self.btn_submit.place(x=540, y=660, width=250, height=60)
+
+                s = ttk.Style()
+                s.configure('my.TButton', font=('Aerial', 18, 'bold'))
+
+                self.btn_edit_images = ttk.Button(win, text="IMAGES", style='my.TButton', width=20)
+                self.btn_edit_images.place(x=150, y=0, width=300, height=150)
+
+                self.btn_new_camera = ttk.Button(win, text="CAMERA", style='my.TButton', width=20, command=new_camera)
+                self.btn_new_camera.place(x=450, y=0, width=300, height=150)
 
                 self.temp_values = []
 
