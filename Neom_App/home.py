@@ -384,6 +384,36 @@ def main():
 
                 selected_values = ["", "", "", "", "", "", "", "", "", "", ""]
 
+                def on_drag(start, end, **kwarg):  # Must accept these arguments.
+                    print(start, end)
+                    print(self.selection_obj.update(start, end))
+                    focus_area = self.selection_obj._get_coords(start, end)
+
+                    x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
+                                                      image_size=(665, 600))
+
+                    # print(focus_area, "hello", width, height)
+                    #
+                    # def bbox_dict_to_list(size, box):
+                    #     dw = 1. / size[0]
+                    #     dh = 1. / size[1]
+                    #     x = (box[0] + box[1]) / 2.0
+                    #     y = (box[2] + box[3]) / 2.0
+                    #     w = box[1] - box[0]
+                    #     h = box[3] - box[2]
+                    #     x = x * dw
+                    #     w = w * dw
+                    #     y = y * dh
+                    #     h = h * dh
+                    #     return (x, y, w, h)
+                    #
+                    # x1, y1, x2, y2 = bbox_dict_to_list([wi,hi], focus_area)
+
+                    self.txtfld3.set(str(x1))
+                    self.txtfld4.set(str(y1))
+                    self.txtfld5.set(str(x2))
+                    self.txtfld6.set(str(y2))
+
 
                 def new_camera():
 
@@ -421,35 +451,7 @@ def main():
                     self.selection_obj = SelectionObject(self.canvas, self.SELECT_OPTS)
 
                     # Callback function to update it given two points of its diagonal.
-                    def on_drag(start, end, **kwarg):  # Must accept these arguments.
-                        print(start, end)
-                        print(self.selection_obj.update(start, end))
-                        focus_area = self.selection_obj._get_coords(start, end)
 
-                        x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
-                                                          image_size=(665, 600))
-
-                        # print(focus_area, "hello", width, height)
-                        #
-                        # def bbox_dict_to_list(size, box):
-                        #     dw = 1. / size[0]
-                        #     dh = 1. / size[1]
-                        #     x = (box[0] + box[1]) / 2.0
-                        #     y = (box[2] + box[3]) / 2.0
-                        #     w = box[1] - box[0]
-                        #     h = box[3] - box[2]
-                        #     x = x * dw
-                        #     w = w * dw
-                        #     y = y * dh
-                        #     h = h * dh
-                        #     return (x, y, w, h)
-                        #
-                        # x1, y1, x2, y2 = bbox_dict_to_list([wi,hi], focus_area)
-
-                        self.txtfld3.set(str(x1))
-                        self.txtfld4.set(str(y1))
-                        self.txtfld5.set(str(x2))
-                        self.txtfld6.set(str(y2))
 
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
@@ -494,35 +496,7 @@ def main():
                     self.selection_obj = SelectionObject(self.canvas, self.SELECT_OPTS)
 
                     # Callback function to update it given two points of its diagonal.
-                    def on_drag(start, end, **kwarg):  # Must accept these arguments.
-                        print(start, end)
-                        print(self.selection_obj.update(start, end))
-                        focus_area = self.selection_obj._get_coords(start, end)
 
-                        x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
-                                                          image_size=(665, 600))
-
-                        # print(focus_area, "hello", width, height)
-                        #
-                        # def bbox_dict_to_list(size, box):
-                        #     dw = 1. / size[0]
-                        #     dh = 1. / size[1]
-                        #     x = (box[0] + box[1]) / 2.0
-                        #     y = (box[2] + box[3]) / 2.0
-                        #     w = box[1] - box[0]
-                        #     h = box[3] - box[2]
-                        #     x = x * dw
-                        #     w = w * dw
-                        #     y = y * dh
-                        #     h = h * dh
-                        #     return (x, y, w, h)
-                        #
-                        # x1, y1, x2, y2 = bbox_dict_to_list([wi,hi], focus_area)
-
-                        self.txtfld3.set(str(x1))
-                        self.txtfld4.set(str(y1))
-                        self.txtfld5.set(str(x2))
-                        self.txtfld6.set(str(y2))
 
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
