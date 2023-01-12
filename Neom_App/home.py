@@ -479,6 +479,10 @@ def main():
                     selected_values = (self.tree.item(curItem)['values'])
 
                     path = selected_values[2]
+
+                    if path == "":
+                        path = "Data/Images/Background/no_image.jpg"
+
                     imgx = ImageTk.PhotoImage(Image.open(path))
 
                     width = imgx.width() / 665
@@ -529,6 +533,107 @@ def main():
                         self.btn_submit.config(state=DISABLED)
                     else:
                         self.btn_submit.config(state=ACTIVE)
+
+                def validate():
+                    try:
+                        json_data = {
+                            "userid": str(self.txtfld1.get()),
+                            "image_url": "",
+                            "w_cord": float(self.txtfld3.get()),
+                            "x_cord": float(self.txtfld4.get()),
+                            "y_cord": float(self.txtfld5.get()),
+                            "z_cord": float(self.txtfld6.get()),
+                            "latitude": float(self.txtfld7.get()),
+                            "longitude": float(self.txtfld8.get()),
+                            "class_of_image": self.image_class[str(self.txtfld2.get())],
+                            "auto": "No",
+                            "uploaded": "No"
+                        }
+
+                        print(json_data)
+
+                        with open('Data/Data/sample.json', 'r+') as openfile:
+                            # Reading from json file
+                            json_object = json.load(openfile)
+                            json_object["data"].append(json_data)
+                            openfile.seek(0)
+                            json.dump(json_object,openfile, indent = 4)
+
+                        print(json_data)
+
+                        messagebox.showinfo("Successfully", "The data saved into Json Data successfully")
+                        load_tree()
+                    except Exception:
+                        print(Exception)
+                        messagebox.showerror("Operation failed", "The data cannot be saved. Entered data invalid")
+
+                def load_tree():
+
+                    self.temp_values = []
+
+
+                    with open('Data/Data/sample.json', 'r') as openfile:
+                        # Reading from json file
+                        json_object = json.load(openfile)
+                        for each in json_object["data"]:
+                            self.temp_values.append([each["userid"], each["image_url"], each["w_cord"], each["x_cord"],
+                                                     each["y_cord"], each["z_cord"], each["latitude"],
+                                                     each["longitude"],
+                                                     each["class_of_image"], each["auto"], each["uploaded"]])
+
+                    self.frame = Frame(win)
+                    self.frame.place(x=20, y=755)
+
+                    self.tree = ttk.Treeview(self.frame, columns=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), height=14,
+                                             show="headings")
+                    self.tree.pack(side='left')
+                    self.tree.bind('<ButtonRelease-1>', selectItem)
+
+                    self.val = ["serial No", "User Id", "Image Url", "W Coordinate", "X Coordinate", "Y Coordinate",
+                                "Z Coordinate", "Latitude", "Longitude", "Class Of Image", "Auto", "Uploaded"]
+
+                    for ii in range(1, len(self.val) + 1):
+                        self.tree.heading(ii, text=self.val[ii - 1])
+
+                    for ii in range(1, len(self.val) + 1):
+                        self.tree.column(ii, width=156, anchor='center')
+
+                    self.scroll1 = ttk.Scrollbar(self.frame, orient="vertical", command=self.tree.yview)
+                    self.scroll1.pack(side='right', fill='y')
+
+                    for i in range(len(self.temp_values)):
+                        if str(self.temp_values[i][10]) == "Yes":
+                            self.tree.insert('', 'end', values=(str(i),
+                                                                str(self.temp_values[i][0]),
+                                                                str(self.temp_values[i][1]),
+                                                                str(self.temp_values[i][2])
+                                                                , str(self.temp_values[i][3]),
+                                                                str(self.temp_values[i][4]),
+                                                                str(self.temp_values[i][5]),
+                                                                str(self.temp_values[i][6]),
+                                                                str(self.temp_values[i][7]),
+                                                                str(self.label_class[self.temp_values[i][8]]),
+                                                                str(self.temp_values[i][9]),
+                                                                str(self.temp_values[i][10])),
+                                             tags=('odd',))
+                        else:
+                            self.tree.insert('', 'end', values=(str(i),
+                                                                str(self.temp_values[i][0]),
+                                                                str(self.temp_values[i][1]),
+                                                                str(self.temp_values[i][2])
+                                                                , str(self.temp_values[i][3]),
+                                                                str(self.temp_values[i][4]),
+                                                                str(self.temp_values[i][5]),
+                                                                str(self.temp_values[i][6]),
+                                                                str(self.temp_values[i][7]),
+                                                                str(self.label_class[self.temp_values[i][8]]),
+                                                                str(self.temp_values[i][9]),
+                                                                str(self.temp_values[i][10])),
+                                             tags=('even',))
+
+                    self.tree.tag_configure('odd', background='#CCFF99')
+                    self.tree.tag_configure('even', background='#FFFF99')
+
 
 
                 load = cv2.imread('Data/Images/Background/background_2.jpg', 1)
@@ -636,7 +741,9 @@ def main():
                 self.txtfld8.set(selected_values[8])
                 self.txtfld8.config(state=DISABLED)
 
-                self.btn_submit = ttk.Button(win, text="SUBMIT")
+                load_tree()
+
+                self.btn_submit = ttk.Button(win, text="SUBMIT", command=validate)
                 self.btn_submit.place(x=540, y=660, width=250, height=60)
 
                 s = ttk.Style()
@@ -648,60 +755,7 @@ def main():
                 self.btn_new_camera = ttk.Button(win, text="CAMERA", style='my.TButton', width=20, command=new_camera)
                 self.btn_new_camera.place(x=450, y=0, width=300, height=150)
 
-                self.temp_values = []
 
-                with open('Data/Data/sample.json', 'r') as openfile:
-                    # Reading from json file
-                    json_object = json.load(openfile)
-                    for each in json_object["data"]:
-                        self.temp_values.append([each["userid"], each["image_url"], each["w_cord"], each["x_cord"],
-                                                 each["y_cord"], each["z_cord"], each["latitude"], each["longitude"],
-                                                 each["class_of_image"], each["auto"], each["uploaded"]])
-
-                self.frame = Frame(win)
-                self.frame.place(x=20, y=755)
-
-                self.tree = ttk.Treeview(self.frame, columns=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), height=14,
-                                         show="headings")
-                self.tree.pack(side='left')
-                self.tree.bind('<ButtonRelease-1>', selectItem)
-
-                self.val = ["serial No", "User Id", "Image Url", "W Coordinate", "X Coordinate", "Y Coordinate",
-                            "Z Coordinate", "Latitude", "Longitude", "Class Of Image", "Auto", "Uploaded"]
-
-                for ii in range(1, len(self.val) + 1):
-                    self.tree.heading(ii, text=self.val[ii - 1])
-
-                for ii in range(1, len(self.val) + 1):
-                    self.tree.column(ii, width=156, anchor='center')
-
-                self.scroll1 = ttk.Scrollbar(self.frame, orient="vertical", command=self.tree.yview)
-                self.scroll1.pack(side='right', fill='y')
-
-                for i in range(len(self.temp_values)):
-                    if str(self.temp_values[i][10]) == "Yes":
-                        self.tree.insert('', 'end', values=(str(i),
-                                                            str(self.temp_values[i][0]), str(self.temp_values[i][1]),
-                                                            str(self.temp_values[i][2])
-                                                            , str(self.temp_values[i][3]), str(self.temp_values[i][4]),
-                                                            str(self.temp_values[i][5]),
-                                                            str(self.temp_values[i][6]), str(self.temp_values[i][7]),
-                                                            str(self.label_class[self.temp_values[i][8]]),
-                                                            str(self.temp_values[i][9]), str(self.temp_values[i][10])),
-                                         tags=('odd',))
-                    else:
-                        self.tree.insert('', 'end', values=(str(i),
-                                                            str(self.temp_values[i][0]), str(self.temp_values[i][1]),
-                                                            str(self.temp_values[i][2])
-                                                            , str(self.temp_values[i][3]), str(self.temp_values[i][4]),
-                                                            str(self.temp_values[i][5]),
-                                                            str(self.temp_values[i][6]), str(self.temp_values[i][7]),
-                                                            str(self.label_class[self.temp_values[i][8]]),
-                                                            str(self.temp_values[i][9]), str(self.temp_values[i][10])),
-                                         tags=('even',))
-
-                self.tree.tag_configure('odd', background='#CCFF99')
-                self.tree.tag_configure('even', background='#FFFF99')
 
                 self.b0 = tk.Button(win,
                                     bg='#33ff00',
@@ -718,66 +772,6 @@ def main():
                 self.b0r.place(x=1770, y=0, width=150, height=150)
 
 
-            def validate(self):
-                pass
-                # try:
-                #     notification = []
-                #     if self.chkValue1.get():
-                #         notification.append("Alarm")
-                #     if self.chkValue2.get():
-                #         notification.append("Text Message")
-                #     if self.chkValue3.get():
-                #         notification.append("Live Stream")
-                #     json_data = {
-                #         "serial": str(self.txtfld1.get()),
-                #         "model": str(self.txtfld2.get()),
-                #         "version": float(self.txtfld3.get()),
-                #         "lastdownload": str(self.txtfld4.get()),
-                #         "lastcheckin": str(self.txtfld5.get()),
-                #         "phonenumber": str(self.txtfldp.get()),
-                #         "notifications": notification,
-                #         "address": str(self.text_box.get(1.0, "end-1c")),
-                #         "cameras": [],
-                #         "alerts": []
-                #     }
-                #
-                #     for each in self.temp_values_1:
-                #         temp = {
-                #             "type": str(each[0]),
-                #             "url": str(each[1]),
-                #             "focus area": str(each[2]),
-                #             "username": str(each[3]),
-                #             "pass": str(each[4]),
-                #
-                #         }
-                #         json_data["cameras"].append(temp)
-                #
-                #     for each in self.temp_values_2:
-                #         temp = {
-                #             "alerttype": str(each[0]),
-                #             "threshold": float(each[1]),
-                #             "start": str(each[2]),
-                #             "end": str(each[3]),
-                #             "minframes": int(each[4])
-                #         }
-                #         json_data["alerts"].append(temp)
-                #
-                #
-                #     json_object = json.dumps(json_data, indent=4)
-                #
-                #     # Writing to sample.json
-                #     f = asksaveasfile(initialfile='Untitled.json', defaultextension=".json",
-                #                       filetypes=[("Json", "*.*")])
-                #     # print(f)
-                #     # with open(f, "w") as outfile:
-                #     #     outfile.write(json_object)
-                #
-                #     f.write(json_object)
-                #     f.close()
-                #
-                #     messagebox.showinfo("Successfully", "The data saved into Json Data successfully")
-                # except:
-                #     messagebox.showerror("Operation failed", "The data cannot be saved. Entered data invalid")
 
             @staticmethod
             def quit():

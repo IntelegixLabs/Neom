@@ -30,9 +30,9 @@
             "userid": 234,
             "image_url": "Data/Saved_Images/smart.png",
             "w_cord": 0.153956,
-            "x_cord": 0.248000,
+            "x_cord": 0.248,
             "y_cord": 0.254222,
-            "z_cord": 0.212800,
+            "z_cord": 0.2128,
             "latitude": 12.44,
             "longitude": 44.9,
             "class_of_image": 6,
@@ -44,7 +44,7 @@
             "image_url": "Data/Saved_Images/GRAFFITI_5.jpeg",
             "w_cord": 0.459961,
             "x_cord": 0.572754,
-            "y_cord": 0.918620,
+            "y_cord": 0.91862,
             "z_cord": 0.458008,
             "latitude": 12.44,
             "longitude": 44.9,
@@ -63,6 +63,19 @@
             "longitude": 100,
             "class_of_image": 6,
             "auto": "Yes",
+            "uploaded": "No"
+        },
+        {
+            "userid": "raj713335",
+            "image_url": "",
+            "w_cord": 0.375187969924812,
+            "x_cord": 0.4508333333333333,
+            "y_cord": 0.3533834586466165,
+            "z_cord": 0.49166666666666664,
+            "latitude": 22.5626,
+            "longitude": 88.363,
+            "class_of_image": 3,
+            "auto": "No",
             "uploaded": "No"
         }
     ]
