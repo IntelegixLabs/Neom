@@ -427,7 +427,7 @@ def main():
                         focus_area = self.selection_obj._get_coords(start, end)
 
                         x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
-                                                          image_size=(hi, wi))
+                                                          image_size=(665, 600))
 
                         # print(focus_area, "hello", width, height)
                         #
@@ -500,7 +500,7 @@ def main():
                         focus_area = self.selection_obj._get_coords(start, end)
 
                         x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
-                                                          image_size=(hi, wi))
+                                                          image_size=(665, 600))
 
                         # print(focus_area, "hello", width, height)
                         #
@@ -527,16 +527,6 @@ def main():
                     # Create mouse position tracker that uses the function.
                     self.posn_tracker = MousePositionTracker(self.canvas)
                     self.posn_tracker.autodraw(command=on_drag)  # Enable callbacks.
-                    # print(float(selected_values[5]) * wi, "width")
-                    # print(float(selected_values[6]) * hi, "height")
-                    # print((int(float(selected_values[3]) * wi), int(float(selected_values[4]) * wi)),
-                    #         (int(float(selected_values[5]) * hi), int(float(selected_values[6]) * hi)))
-                    # x, y, w, h = int(float(selected_values[3]) * (wi/2)), int(float(selected_values[4]) * (hi/2)), int(float(selected_values[5]) * wi), int(float(selected_values[6]) * hi)
-                    # print(x, y, w, h, "hh")
-                    # x = int(x - (h / 2))
-                    # y = int(y - (w / 2))
-                    # print((y, y+h), (x,x+w))
-                    # print(x,y, w, h, "hh")
 
                     center_X = (float(selected_values[3]) * wi) / width
                     center_y = (float(selected_values[4]) * hi) / height
@@ -548,7 +538,6 @@ def main():
 
                     on_drag((int(x), int(y)), (x + int(widthx), int(y + heightx)))
 
-                    # on_drag((352, 209), (1000, 448))
 
                     self.txtfld1.set(selected_values[1])
                     self.txtfld2.set(selected_values[9])
