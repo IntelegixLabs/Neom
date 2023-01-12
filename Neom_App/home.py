@@ -397,9 +397,22 @@ def main():
                     self.txtfld6.set(str(y2))
 
 
-                def new_camera():
+                def open_image_file():
+                    filename = filedialog.askopenfilename(initialdir="/",
+                                                          title="Select a image File",
+                                                          filetypes=(("Image files",
+                                                                      "*.jpg"),
+                                                                     ("Image files",
+                                                                      "*.jpeg*"),
+                                                                     ("Image files",
+                                                                      "*.png*")
+                                                                     ))
+                    new_camera(filename)
 
-                    vid = cv2.VideoCapture(0)
+
+                def new_camera(path=0):
+
+                    vid = cv2.VideoCapture(path)
 
                     # Declare the width and height in variables
                     wi, hi = 665, 600
@@ -619,7 +632,7 @@ def main():
                 s = ttk.Style()
                 s.configure('my.TButton', font=('Aerial', 18, 'bold'))
 
-                self.btn_edit_images = ttk.Button(win, text="IMAGES", style='my.TButton', width=20)
+                self.btn_edit_images = ttk.Button(win, text="IMAGES", style='my.TButton', width=20, command=open_image_file)
                 self.btn_edit_images.place(x=150, y=0, width=300, height=150)
 
                 self.btn_new_camera = ttk.Button(win, text="CAMERA", style='my.TButton', width=20, command=new_camera)
