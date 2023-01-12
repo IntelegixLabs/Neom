@@ -455,7 +455,12 @@ def main():
 
                     latitude, longitude = geocoder.ip('me').latlng
 
-                    self.txtfld1.set("")
+                    config = configparser.ConfigParser()
+                    config.read('Data/Keys/config.ini')
+                    config_token = config.items('TOKEN')
+                    UP_URL = str(config_token[1][1])
+
+                    self.txtfld1.set(UP_URL)
                     self.txtfld2.set("")
                     self.txtfld3.set("")
                     self.txtfld4.set("")
