@@ -1,12 +1,13 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox, Frame, filedialog, Label, DISABLED, ACTIVE, END
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageGrab
 import cv2
 import configparser
 import json
 import pybboxes as pbx
 import geocoder
+from datetime import datetime
 import os
 
 
@@ -536,19 +537,29 @@ def main():
 
                 def validate():
                     try:
+                        #on_drag((int(0), int(0)), (665, 600))
+                        now = datetime.now()
+                        filename = "Data/Saved_Images/"+ str(now.strftime("%Y%m%d%H%M%S") + str(".jpg"))
+                        ImageGrab.grab(bbox=(
+                            self.canvas.winfo_rootx(),
+                            self.canvas.winfo_rooty(),
+                            self.canvas.winfo_rootx() + self.canvas.winfo_width(),
+                            self.canvas.winfo_rooty() + self.canvas.winfo_height()
+                        )).save(filename)
+
                         json_data = {
-                            "userid": str(self.txtfld1.get()),
-                            "image_url": "",
-                            "w_cord": float(self.txtfld3.get()),
-                            "x_cord": float(self.txtfld4.get()),
-                            "y_cord": float(self.txtfld5.get()),
-                            "z_cord": float(self.txtfld6.get()),
-                            "latitude": float(self.txtfld7.get()),
-                            "longitude": float(self.txtfld8.get()),
-                            "class_of_image": self.image_class[str(self.txtfld2.get())],
-                            "auto": "No",
-                            "uploaded": "No"
-                        }
+                                "userid": str(self.txtfld1.get()),
+                                "image_url": filename,
+                                "w_cord": float(self.txtfld3.get()),
+                                "x_cord": float(self.txtfld4.get()),
+                                "y_cord": float(self.txtfld5.get()),
+                                "z_cord": float(self.txtfld6.get()),
+                                "latitude": float(self.txtfld7.get()),
+                                "longitude": float(self.txtfld8.get()),
+                                "class_of_image": self.image_class[str(self.txtfld2.get())],
+                                "auto": "No",
+                                "uploaded": "No"
+                            }
 
                         print(json_data)
 

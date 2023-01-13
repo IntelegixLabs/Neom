@@ -64,19 +64,6 @@
             "class_of_image": 6,
             "auto": "Yes",
             "uploaded": "No"
-        },
-        {
-            "userid": "raj713335",
-            "image_url": "",
-            "w_cord": 0.375187969924812,
-            "x_cord": 0.4508333333333333,
-            "y_cord": 0.3533834586466165,
-            "z_cord": 0.49166666666666664,
-            "latitude": 22.5626,
-            "longitude": 88.363,
-            "class_of_image": 3,
-            "auto": "No",
-            "uploaded": "No"
         }
     ]
 }
