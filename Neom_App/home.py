@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox, Frame, filedialog, Label, DISABLED, ACTIVE, END
@@ -392,11 +393,14 @@ def main():
                     x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
                                                       image_size=(665, 600))
 
+                    print(x1, y1, x2, y2)
 
-                    self.txtfld3.set(str(x1))
-                    self.txtfld4.set(str(y1))
-                    self.txtfld5.set(str(x2))
-                    self.txtfld6.set(str(y2))
+                    if x1 != 0.5 and y1 != 0.5 and x2 != 1.0 and y2 != 1.0:
+
+                        self.txtfld3.set(str(x1))
+                        self.txtfld4.set(str(y1))
+                        self.txtfld5.set(str(x2))
+                        self.txtfld6.set(str(y2))
 
 
                 def open_image_file():
@@ -537,7 +541,8 @@ def main():
 
                 def validate():
                     try:
-                        #on_drag((int(0), int(0)), (665, 600))
+                        on_drag((int(0), int(0)), (665, 600))
+                        time.sleep(1)
                         now = datetime.now()
                         filename = "Data/Saved_Images/"+ str(now.strftime("%Y%m%d%H%M%S") + str(".jpg"))
                         ImageGrab.grab(bbox=(
