@@ -3,7 +3,7 @@
 ### 1. Project Architecture
 
 <p align="center">
-  <img src="DATA/Neom.png" />
+  <img src="Data/Neom.png" />
 </p>
 
 
