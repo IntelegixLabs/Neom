@@ -374,21 +374,23 @@ def main():
             def __init__(self, win, *args, **kwargs):
                 super().__init__(win, *args, **kwargs)
 
-                self.label_class = {0: 'POTHOLES', 1: 'GRAFFITI', 2: 'FADED SIGNAGE', 3: 'GARBAGE',
+                self.label_class = {0: 'GRAFFITI', 1: 'FADED SIGNAGE', 2: 'POTHOLES',3: 'GARBAGE',
                                     4: 'CONSTRUCTION ROAD', 5: 'BROKEN SIGNAGE', 6: 'BAD STREETLIGHT',
                                     7: 'BAD BILLBOARD', 8: 'SAND ON ROAD', 9: 'CLUTTER SIDEWALK',
                                     10: 'UNKEPT FACADE'}
 
-                self.image_class = {'POTHOLES': 0, 'GRAFFITI': 1, 'FADED SIGNAGE': 2, 'GARBAGE': 3,
-                                    'CONSTRUCTION ROAD': 4, 'BROKEN SIGNAGE': 5, 'BAD STREETLIGHT': 6,
-                                    'BAD BILLBOARD': 7, 'SAND ON ROAD': 8, 'CLUTTER SIDEWALK': 9,
-                                    'UNKEPT FACADE': 10}
+                self.image_class = {'GRAFFITI': 0, 'FADED_SIGNAGE': 1, 'POTHOLES': 2, 'GARBAGE': 3,
+               'CONSTRUCTION_ROAD': 4, 'BROKEN_SIGNAGE': 5, 'BAD_STREETLIGHT': 6,
+               'BAD_BILLBOARD': 7, 'SAND_ON_ROAD': 8, 'CLUTTER_SIDEWALK': 9,
+               'UNKEPT_FACADE': 10}
 
                 selected_values = ["", "", "", "", "", "", "", "", "", "", ""]
 
                 def on_drag(start, end, **kwarg):  # Must accept these arguments.
                     self.selection_obj.update(start, end)
                     focus_area = self.selection_obj._get_coords(start, end)
+
+                    print(focus_area)
 
                     x1, y1, x2, y2 = pbx.convert_bbox(focus_area, from_type="voc", to_type="yolo",
                                                       image_size=(665, 600))
@@ -473,6 +475,8 @@ def main():
                     self.txtfld6.set("")
                     self.txtfld7.set(latitude)
                     self.txtfld8.set(longitude)
+
+                    self.btn_submit.config(state=ACTIVE)
 
 
                     vid.release()
@@ -617,7 +621,7 @@ def main():
                     self.scroll1 = ttk.Scrollbar(self.frame, orient="vertical", command=self.tree.yview)
                     self.scroll1.pack(side='right', fill='y')
 
-                    for i in range(len(self.temp_values)):
+                    for i in range(len(self.temp_values)-1,-1, -1):
                         if str(self.temp_values[i][10]) == "Yes":
                             self.tree.insert('', 'end', values=(str(i),
                                                                 str(self.temp_values[i][0]),
