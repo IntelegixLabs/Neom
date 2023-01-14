@@ -1,4 +1,11 @@
-# Neom
+# Neom Application
+
+### 1. Project Architecture
+
+<p align="center">
+  <img src="DATA/Neom.png" />
+</p>
+
 
 ## Open Image Labelling Tool
 
