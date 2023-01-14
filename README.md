@@ -1,6 +1,6 @@
 # Neom Application
 
-### 1. Project Architecture
+## 1. Project Architecture
 
 <p align="center">
   <img src="Data/Neom.png" />
