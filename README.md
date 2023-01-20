@@ -81,8 +81,8 @@ $ pyinstaller -i "favicon.ico" --onefile -w --hiddenimport=EasyTkinter --hiddeni
 ## GUI INTERFACE SAMPLES
 
 <p align="center">
-    <img src="Data/Screenshots/1.png" width="600">
-    <img src="Data/Screenshots/4.png" width="600">
+    <img src="Data/Screenshots/1.png" width="400">
+    <img src="Data/Screenshots/4.png" width="400">
 </p>
 
 ## THEME 1 (Detection and evaluation of the following elements on street imagery taken from a moving vehicle) :camera_flash:
