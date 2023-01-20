@@ -122,7 +122,7 @@ Visual pollution types:
 ```
 
 <p align="center">
-    <img src="Data/Screenshots/5.png" width="400">
+    <img src="Data/Screenshots/5.png" width="800">
 </p>
 
 ## THEME 2 (Pothole severity classification via computer vision) :camera_flash:
@@ -161,7 +161,7 @@ quantify pavement deterioration. These commercial software programs do not, howe
 or identify all the potholes that have been spotted.
 
 <p align="center">
-    <img src="Data/Screenshots/2.png" width="400">
+    <img src="Data/Screenshots/2.png" width="800">
 </p>
 
 
