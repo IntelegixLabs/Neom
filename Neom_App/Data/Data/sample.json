@@ -1351,6 +1351,19 @@
             "class_of_image": 3,
             "auto": "Yes",
             "uploaded": "Yes"
+        },
+        {
+            "userid": "raj713335",
+            "image_url": "Data/Saved_Images/20230121023814.jpg",
+            "w_cord": 0.47443609022556393,
+            "x_cord": 0.7675,
+            "y_cord": 0.6270676691729323,
+            "z_cord": 0.4583333333333333,
+            "latitude": 22.5333,
+            "longitude": 88.3917,
+            "class_of_image": 2,
+            "auto": "No",
+            "uploaded": "No"
         }
     ]
 }

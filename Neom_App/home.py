@@ -9,6 +9,13 @@ import json
 import pybboxes as pbx
 import geocoder
 from datetime import datetime
+from pathlib import Path
+import os
+from scipy.spatial import distance
+import numpy as np
+import time
+import cv2
+from datetime import datetime
 import os
 
 
@@ -255,7 +262,7 @@ def main():
                 self.b3 = ttk.Button(win, text='Live Dash Cam', width=20, command=self.dash_cam)
                 self.b3.place(x=1400, y=220, width=300, height=100)
 
-                self.b4 = ttk.Button(win, text='Label Picture', width=20, command=self.label_picture)
+                self.b4 = ttk.Button(win, text='Detect Picture', width=20, command=self.label_picture)
                 self.b4.place(x=1480, y=530, width=300, height=100)
 
                 regx.destroy()
@@ -330,23 +337,41 @@ def main():
                 window_user_login1.destroy()
                 exit(0)
 
-            @staticmethod
+
             def pot_holes(self):
-                window_user_login1.destroy()
+                import torch
+                with torch.no_grad():
+                    from ENGINES import AI_POTHOLES_DETECTION
+                    AI_POTHOLES_DETECTION.AI_POTHOLES_DETECTION(source="TEST_VIDEO/potholes.mp4", model_weights="Model/potholes_detector1.pt")
+                    #window_user_login1.destroy()
                 # second(user_key=user_key, job="HOSTEL ENVIRONMENT")
 
             def data_viewer(self):
                 window_user_login1.destroy()
                 data_viewer()
 
-            @staticmethod
             def dash_cam(self):
-                window_user_login1.destroy()
+                import torch
+                with torch.no_grad():
+                    from ENGINES import AI_DASH_CAM
+                    AI_DASH_CAM.AI_DASH_CAM(source="TEST_VIDEO/Visual_Pollution.mp4",
+                                                                model_weights="Model/visual_pollution.pt")
+                #window_user_login1.destroy()
                 # second(user_key=user_key, job="BUS ENVIRONMENT")
 
-            @staticmethod
             def label_picture(self):
-                window_user_login1.destroy()
+                filename = filedialog.askopenfilename(initialdir="/",
+                                                      title="Select a image File",
+                                                      filetypes=(("Image files",
+                                                                  "*.jpg"),
+                                                                 ("Image files",
+                                                                  "*.jpeg*"),
+                                                                 ("Image files",
+                                                                  "*.png*")
+                                                                 ))
+                import torch
+                from ENGINES import AI_DASH_CAM_IMAGE
+                AI_DASH_CAM_IMAGE.AI_DASH_CAM_IMAGE(filename, model_weights="Model/visual_pollution.pt")
                 # second(user_key=user_key, job="EXAM ENVIRONMENT")
 
             @staticmethod
