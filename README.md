@@ -76,6 +76,15 @@ $ pyinstaller -i "favicon.ico" --onefile -w --hiddenimport=EasyTkinter --hiddeni
 ```
 # 4. Working Samples 
 
+- For Video Demostration refer to the YouTube link <a href="">here.</a>
+
+## GUI INTERFACE SAMPLES
+
+<p align="center">
+    <img src="Data/Screenshots/1.png" width="400">
+    <img src="Data/Screenshots/4.png" width="400">
+</p>
+
 ## THEME 1 (Detection and evaluation of the following elements on street imagery taken from a moving vehicle) :camera_flash:
 
 Since visual pollution is a relatively recent issue compared to other forms of environmental
@@ -112,7 +121,7 @@ Visual pollution types:
 ● UNKEPT_FACADE
 
 
-# THEME 2 (Pothole severity classification via computer vision) :camera_flash:
+## THEME 2 (Pothole severity classification via computer vision) :camera_flash:
 
 SThe majority of current pavement condition assessment techniques are labor-intensive and
 manual. Existing techniques for identifying and evaluating potholes rely on 3D surface
