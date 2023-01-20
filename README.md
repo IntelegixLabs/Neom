@@ -28,6 +28,9 @@ Add train,val, and test data to Neom/yolov7-custom/data files
 git clone https://github.com/IntelegixLabs/Neom
 cd Neom
 cd yolov7-custom
+pip install -r requirements.txt
+pip intsall -r requirements_gpu.txt
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
 python train.py --workers 1 --device 0 --batch-size 8 --epochs 100 --img 640 640 --data data/custom_data.yaml --hyp data/hyp.scratch.custom.yaml --cfg cfg/training/yolov7-custom.yaml --name yolov7-custom --weights yolov7.pt
 
 ```
