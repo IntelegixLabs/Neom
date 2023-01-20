@@ -6,15 +6,15 @@
   <img src="Data/Neom.png" />
 </p>
 
-# 2. Train the YoloV7 Object Detection Model
+## 2. Train the YoloV7 Object Detection Model
 
-## Open Image Labelling Tool
+### Open Image Labelling Tool
 
 ```commandline
 labelImg
 ```
 
-## Add more data from the already labelled images
+### Add more data from the already labelled images
 
 ```
 git clone https://github.com/IntelegixLabs/smartathon-dataset
@@ -22,7 +22,7 @@ cd smartathon-dataset
 Add train,val, and test data to Neom/yolov7-custom/data files 
 ```
 
-## Train the custom Yolov7 Model
+### Train the custom Yolov7 Model
 
 ```commandline
 git clone https://github.com/IntelegixLabs/Neom
@@ -36,7 +36,7 @@ python train.py --workers 1 --device 0 --batch-size 8 --epochs 100 --img 640 640
 ```
 
 
-# 3. Getting Started With Car Dash Board Application
+## 3. Getting Started With Car Dash Board Application
 
 - Clone the repo and cd into the directory
 ```sh
@@ -66,7 +66,7 @@ $ python home.py
 ```
 
 
-## Packaging the Application for Creating a Execulatle exe File that can run in Windows,Linus,or Mac OS
+### Packaging the Application for Creating a Execulatle exe File that can run in Windows,Linus,or Mac OS
 
 You can pass any valid `pyinstaller` flag in the following command to further customize the way your app is built.
 for reference read the pyinstaller documentation <a href="https://pyinstaller.readthedocs.io/en/stable/usage.html">here.</a>
@@ -74,18 +74,18 @@ for reference read the pyinstaller documentation <a href="https://pyinstaller.re
 ```sh
 $ pyinstaller -i "favicon.ico" --onefile -w --hiddenimport=EasyTkinter --hiddenimport=Pillow  --hiddenimport=opencv-python --hiddenimport=requests--hiddenimport=Configparser --hiddenimport=PyAutoGUI --hiddenimport=numpy --hiddenimport=pandas --hiddenimport=urllib3 --hiddenimport=tensorflow --hiddenimport=scikit-learn --hiddenimport=wget --hiddenimport=pygame --hiddenimport=dlib --hiddenimport=imutils --hiddenimport=deepface --hiddenimport=keras --hiddenimport=cvlib --name Neom home.py
 ```
-# 4. Working Samples 
+## 4. Working Samples 
 
 - For Video Demostration refer to the YouTube link <a href="">here.</a>
 
-## GUI INTERFACE SAMPLES
+### GUI INTERFACE SAMPLES
 
 <p align="center">
     <img src="Data/Screenshots/1.png" width="400">
     <img src="Data/Screenshots/4.png" width="400">
 </p>
 
-## THEME 1 (Detection and evaluation of the following elements on street imagery taken from a moving vehicle) :camera_flash:
+### THEME 1 (Detection and evaluation of the following elements on street imagery taken from a moving vehicle) :camera_flash:
 
 
 
@@ -109,7 +109,7 @@ Visual pollution types:
     <img src="Data/Screenshots/5.png" width="800">
 </p>
 
-## THEME 2 (Pothole severity classification via computer vision) :camera_flash:
+### THEME 2 (Pothole severity classification via computer vision) :camera_flash:
 
 
 <p align="center">
@@ -117,7 +117,7 @@ Visual pollution types:
 </p>
 
 
-## Car Dashboard Image Custom Labelling Tool 
+### Car Dashboard Image Custom Labelling Tool 
 
 
 <p align="center">
