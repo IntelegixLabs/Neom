@@ -1,4 +1,4 @@
-# Neom Application
+<h1 align="center">Neom</h1>
 
 ## 1. Project Architecture
 
