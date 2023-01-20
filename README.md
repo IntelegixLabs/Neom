@@ -6,6 +6,7 @@
   <img src="Data/Neom.png" />
 </p>
 
+# Train the YoloV7 Object Detection Model
 
 ## Open Image Labelling Tool
 
@@ -13,9 +14,20 @@
 labelImg
 ```
 
+## Add more data from the already labelled images
+
+```
+git clone https://github.com/IntelegixLabs/smartathon-dataset
+cd smartathon-dataset
+Add train,val, and test data to Neom/yolov7-custom/data files 
+```
+
 ## Train the custom Yolov7 Model
 
 ```commandline
+git clone https://github.com/IntelegixLabs/Neom
+cd Neom
+cd yolov7-custom
 python train.py --workers 1 --device 0 --batch-size 8 --epochs 100 --img 640 640 --data data/custom_data.yaml --hyp data/hyp.scratch.custom.yaml --cfg cfg/training/yolov7-custom.yaml --name yolov7-custom --weights yolov7.pt
 
 ```
