@@ -30,6 +30,7 @@ $ cd Neom
 $ cd Neom_App
 ```
 - Download the Trained Models and Test_Video Folder from google Drive link given below and extract it inside Neom_App Folder
+- https://drive.google.com/file/d/1YXf8kMjowu28J5Z_ZPXoRIDABRKzmHis/view?usp=sharing
 
 ```sh
 $ wget [https://drive.google.com/uc?export=download&confirm=8oGL&id=1fvrGNxotZB7VqJgND9La4a_Ki758GN2o](https://drive.google.com/file/d/1YXf8kMjowu28J5Z_ZPXoRIDABRKzmHis/view?usp=sharing)
