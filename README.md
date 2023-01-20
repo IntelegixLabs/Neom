@@ -107,7 +107,7 @@ planning and empowering communities around the world.
 
 Visual pollution types:
 
-
+```
  ● GRAFFITI
  ● FADED SIGNAGE
  ● POTHOLES
@@ -119,7 +119,7 @@ Visual pollution types:
  ● SAND ON ROAD
  ● CLUTTER_SIDEWALK
  ● UNKEPT_FACADE
-
+```
 
 ## THEME 2 (Pothole severity classification via computer vision) :camera_flash:
 
