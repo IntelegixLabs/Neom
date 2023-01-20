@@ -121,6 +121,10 @@ Visual pollution types:
  ● UNKEPT_FACADE
 ```
 
+<p align="center">
+    <img src="Data/Screenshots/5.png" width="400">
+</p>
+
 ## THEME 2 (Pothole severity classification via computer vision) :camera_flash:
 
 SThe majority of current pavement condition assessment techniques are labor-intensive and
@@ -155,6 +159,10 @@ combines digital cameras and infrared lasers to capture continuous images of lin
 infrared lasers is based on 3D surface profiles from time-of-flight laser scanners to classify and
 quantify pavement deterioration. These commercial software programs do not, however, count
 or identify all the potholes that have been spotted.
+
+<p align="center">
+    <img src="Data/Screenshots/2.png" width="400">
+</p>
 
 
 
