@@ -24,7 +24,7 @@ def AI_WEED_IMAGE_DETECTION(source="0"):
     print(weights)
     img_size = 640
     iou_thres = 0.4
-    conf_thres = 0.4
+    conf_thres = 0.45
 
     image_class = {'GRAFFITI': 0, 'FADED_SIGNAGE': 1, 'POTHOLES': 2, 'GARBAGE': 3,
                    'CONSTRUCTION_ROAD': 4, 'BROKEN_SIGNAGE': 5, 'BAD_STREETLIGHT': 6,
@@ -128,8 +128,8 @@ def AI_WEED_IMAGE_DETECTION(source="0"):
 
 
 
-            # cv2.imshow("Output", im0)
-            # cv2.waitKey(1)
+            cv2.imshow("Output", im0)
+            cv2.waitKey(100)
 
             return res
 
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     with torch.no_grad():
         i = 0
 
-        with open('test.csv', mode='r') as file:
+        with open('../../THEME1_SUBMISSION/test.csv', mode='r') as file:
             # reading the CSV file
             csvFile = csv.reader(file)
             for lines in csvFile:

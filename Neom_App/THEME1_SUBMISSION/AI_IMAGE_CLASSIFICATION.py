@@ -1,21 +1,38 @@
-import argparse
-import time
 from pathlib import Path
-
+import os
+from scipy.spatial import distance
+import numpy as np
+import time
 import cv2
+from datetime import datetime
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 
-from ..models.experimental import attempt_load
-from ..utils.datasets import LoadStreams, LoadImages
-from ..utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
+
+from models.experimental import attempt_load
+from utils.datasets import LoadStreams, LoadImages
+from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
-from ..utils.plots import plot_one_box
-from ..utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
+from utils.plots import plot_one_box
+from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
 
+def AI_IMAGE_CLASSIFICATION(source="0"):
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(device)
+    weights = "visual_pollution-e6e.pt"
+    print(weights)
+    img_size = 640
+    iou_thres = 0.4
+    conf_thres = 0.4
 
-def detect(source, weights, device, img_size, iou_thres, conf_thres):
+    image_class = {'GRAFFITI': 0, 'FADED_SIGNAGE': 1, 'POTHOLES': 2, 'GARBAGE': 3,
+                   'CONSTRUCTION_ROAD': 4, 'BROKEN_SIGNAGE': 5, 'BAD_STREETLIGHT': 6,
+                   'BAD_BILLBOARD': 7, 'SAND_ON_ROAD': 8, 'CLUTTER_SIDEWALK': 9,
+                   'UNKEPT_FACADE': 10}
+
+    res = []
+    confidence = 0
 
     webcam = source.isnumeric()
 
@@ -31,7 +48,6 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
 
     if half:
         model.half()  # to FP16
-
 
     # Set Dataloader
     if webcam:
@@ -51,7 +67,6 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
     old_img_w = old_img_h = imgsz
     old_img_b = 1
 
-    t0 = time.time()
     for path, img, im0s, vid_cap in dataset:
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
@@ -60,33 +75,27 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
             img = img.unsqueeze(0)
 
         # Warmup
-        if device.type != 'cpu' and (old_img_b != img.shape[0] or old_img_h != img.shape[2] or old_img_w != img.shape[3]):
+        if device.type != 'cpu' and (
+                old_img_b != img.shape[0] or old_img_h != img.shape[2] or old_img_w != img.shape[3]):
             old_img_b = img.shape[0]
             old_img_h = img.shape[2]
             old_img_w = img.shape[3]
 
-
-        # Inference
-        t1 = time_synchronized()
-        with torch.no_grad():   # Calculating gradients would cause a GPU memory leak
+        with torch.no_grad():  # Calculating gradients would cause a GPU memory leak
             pred = model(img)[0]
-        t2 = time_synchronized()
 
         # Apply NMS
         pred = non_max_suppression(pred, conf_thres, iou_thres)
-        t3 = time_synchronized()
-
 
         # Process detections
         for i, det in enumerate(pred):  # detections per image
+
             if webcam:  # batch_size >= 1
                 p, s, im0, frame = path[i], '%g: ' % i, im0s[i].copy(), dataset.count
             else:
                 p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
 
-            p = Path(p)  # to Path
-            # save_path = str(save_dir / p.name)  # img.jpg
-            # txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
+
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             if len(det):
                 # Rescale boxes from img_size to im0 size
@@ -99,32 +108,56 @@ def detect(source, weights, device, img_size, iou_thres, conf_thres):
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
-                    # if save_txt:  # Write to file
-                    #     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    #     line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
-                    #     with open(txt_path + '.txt', 'a') as f:
-                    #         f.write(('%g ' * len(line)).rstrip() % line + '\n')
-                    #
-                    # if save_img or view_img:  # Add bbox to image
                     label = f'{names[int(cls)]} {conf:.2f}'
                     plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
 
+                    label = f'{names[int(cls)]} {conf:.2f}'
+                    plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
+                    print(names[int(cls)], xyxy)
+                    print((int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])))
+                    name = names[int(cls)].replace(" ","_")
+                    if confidence < conf:
+                        res = [[image_class[name], source.split("/")[1], name, (int(xyxy[2]))//2,
+                                (int(xyxy[0]))//2, (int(xyxy[3]))//2, (int(xyxy[1]))//2 ]]
+                        confidence = conf
+
+
             # Print time (inference + NMS)
-            print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
-
-            # Stream results
 
 
 
 
-            cv2.imshow(str(p), im0)
-            cv2.waitKey(1)  # 1 millisecond
+
+            # cv2.imshow("Output", im0)
+            # cv2.waitKey(1)
+
+            return res
 
 
-    print(f'Done. ({time.time() - t0:.3f}s)')
-
+            # if (cv2.waitKey(1) & 0xFF == ord('q')):
+            #     break
 
 if __name__ == '__main__':
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    import csv
     with torch.no_grad():
-        detect("0", "best.pt", device, img_size=640, iou_thres=0.45, conf_thres=0.5)
+        i = 0
+
+        with open('test.csv', mode='r') as file:
+            # reading the CSV file
+            csvFile = csv.reader(file)
+            for lines in csvFile:
+                i += 1
+                if i == 1:
+                    continue
+                # if i == 10:
+                #     exit(0)
+
+                res = (AI_IMAGE_CLASSIFICATION("Test_Dataset/"+lines[0]))
+                print(i, res, "res")
+
+                if len(res) == 0:
+                    res = [[0,lines[0],"GRAFFITI",0,0,0,0]]
+                with open(r'../Neom_App/ENGINES/sample_submission.csv', 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    for each in res:
+                        writer.writerow(each)
