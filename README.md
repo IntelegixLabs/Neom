@@ -33,10 +33,10 @@ $ cd Neom_App
 - https://drive.google.com/file/d/1YXf8kMjowu28J5Z_ZPXoRIDABRKzmHis/view?usp=sharing
 
 ```sh
-$ wget [https://drive.google.com/uc?export=download&confirm=8oGL&id=1fvrGNxotZB7VqJgND9La4a_Ki758GN2o](https://drive.google.com/file/d/1YXf8kMjowu28J5Z_ZPXoRIDABRKzmHis/view?usp=sharing)
+$ wget https://drive.google.com/file/d/1YXf8kMjowu28J5Z_ZPXoRIDABRKzmHis/view?usp=sharing
 ```
 
-- Install Python 3.7.3 and its required Packages like tensorflow etc.
+- Install Python 3.10 and its required Packages like PyTorch etc.
 
 ```sh
 $ pip install -r requirements.txt
