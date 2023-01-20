@@ -81,8 +81,8 @@ $ pyinstaller -i "favicon.ico" --onefile -w --hiddenimport=EasyTkinter --hiddeni
 ## GUI INTERFACE SAMPLES
 
 <p align="center">
-    <img src="Data/Screenshots/1.png" width="400">
-    <img src="Data/Screenshots/4.png" width="400">
+    <img src="Data/Screenshots/1.png" width="600">
+    <img src="Data/Screenshots/4.png" width="600">
 </p>
 
 ## THEME 1 (Detection and evaluation of the following elements on street imagery taken from a moving vehicle) :camera_flash:
@@ -108,17 +108,17 @@ planning and empowering communities around the world.
 Visual pollution types:
 
 
-● GRAFFITI
-● FADED SIGNAGE
-● POTHOLES
-● GARBAGE
-● CONSTRUCTION ROAD
-● BROKEN_SIGNAGE
-● BAD STREETLIGHT
-● BAD BILLBOARD
-● SAND ON ROAD
-● CLUTTER_SIDEWALK
-● UNKEPT_FACADE
+ ● GRAFFITI
+ ● FADED SIGNAGE
+ ● POTHOLES
+ ● GARBAGE
+ ● CONSTRUCTION ROAD
+ ● BROKEN_SIGNAGE
+ ● BAD STREETLIGHT
+ ● BAD BILLBOARD
+ ● SAND ON ROAD
+ ● CLUTTER_SIDEWALK
+ ● UNKEPT_FACADE
 
 
 ## THEME 2 (Pothole severity classification via computer vision) :camera_flash:
