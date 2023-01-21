@@ -1,5 +1,25 @@
 <h1 align="center">Neom</h1>
 
+## Features
+-  Car Dashboard Application, to upload visual pollution images after detection from, the yolov7 model.
+-  We have used Tiny Yolov7 Model Architecture to ensure, the car dashcam requires very less, hardware configuration to run the application.
+-  Categories/label the potholes, based on severity large, medium, and small. 
+-  Custom Labelling tool, to self Label the Application.
+-  Sending of data points once connected to the internet, like userid, detected_image, label, bounding_box_co-ordinate, latitude, and longitude through rest API.
+-  Rest API saves the real-time data, in the database, and sends the data to Admin Web Interface.
+-  Admin can then ask the authority to repair/clean or take necessary steps according to the protocol.
+-  Once fixed, Admin can remove the data_points from the list, by uploading a fixed image.
+-  Auto Train the custom-yolov7 model, with new data points every week, and update the car dashboard Application over the internet, to improve the accuracy of the model over time.
+-  To, incentivize the user to label or find more areas that need a fix, we incentivize them by sending them crypto rewards, through a smart contract, based on the images they are uploading.
+
+
+
+## List of Neom Repos
+- <strong>Smartathon Training DataSet Repository:</strong> https://github.com/IntelegixLabs/smartathon-dataset
+- <strong>Neom Car Dashboard Repository:</strong> https://github.com/IntelegixLabs/Neom
+- <strong>Neom API :</strong> https://github.com/IntelegixLabs/smartathon-api
+- <strong>Neom Web Client:</strong> https://github.com/IntelegixLabs/smartathon-client
+
 ## 1. Project Architecture
 
 <p align="center">
