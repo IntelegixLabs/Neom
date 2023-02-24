@@ -60,7 +60,7 @@ python train.py --workers 1 --device 0 --batch-size 8 --epochs 100 --img 640 640
 
 - Clone the repo and cd into the directory
 ```sh
-$ git clone https://github.com/raj713335/Neom.git
+$ git clone https://github.com/IntelegixLabs/Neom.git
 $ cd Neom
 $ cd Neom_App
 ```
