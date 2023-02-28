@@ -1,15 +1,15 @@
 <h1 align="center"><a href="https://www.youtube.com/watch?v=o_VaF7S8ptM">Neom</h1>
 
 ## Features
--  Mobile/Desktop Application, to upload visual pollution images after detection from, the yolov7 model.
--  We have used Tiny Yolov7 Model Architecture to ensure, the app requires significantly less, hardware configuration to run the application.
--  Categories/label the images and detect crop/weed. 
+-  Car Dashboard Application, to upload visual pollution images after detection from, the yolov7 model.
+-  We have used Tiny Yolov7 Model Architecture to ensure, the car dashcam requires very less, hardware configuration to run the application.
+-  Categories/label the potholes, based on severity large, medium, and small. 
 -  Custom Labelling tool, to self Label the Application.
--  Sending data points once connected to the internet, like userid, detected_image, label, bounding_box_co-ordinate, latitude, and longitude through rest API.
+-  Sending of data points once connected to the internet, like userid, detected_image, label, bounding_box_co-ordinate, latitude, and longitude through rest API.
 -  Rest API saves the real-time data, in the database, and sends the data to Admin Web Interface.
--  Admin can then ask the view the weed in the farmland and ask for remedies from hand plucking to spray of Weedicides.
--  Once remedy has been taken. admin can remove the data -points.
--  Auto Train the custom-yolov7 model, with new data points every week, and update the Application AI Model over the internet, to improve the model's accuracy over time.
+-  Admin can then ask the authority to repair/clean or take necessary steps according to the protocol.
+-  Once fixed, Admin can remove the data_points from the list, by uploading a fixed image.
+-  Auto Train the custom-yolov7 model, with new data points every week, and update the car dashboard Application over the internet, to improve the accuracy of the model over time.
 -  To, incentivize the user to label or find more areas that need a fix, we incentivize them by sending them crypto rewards, through a smart contract, based on the images they are uploading.
 
 
