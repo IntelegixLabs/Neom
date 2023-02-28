@@ -137,7 +137,7 @@ Visual pollution types:
 </p>
 
 
-### Car Dashboard Image Custom Labelling Tool 
+### Car Dashboard Custom Image Labelling Tool 
 
 
 <p align="center">
